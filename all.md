@@ -1,14 +1,4 @@
-# array
-
-## 1.Two Sum
-
-给定一个 没有排序的 数组中，找出其中两个数和等于目标数的索引值(有且仅有一个)。
-
-**example**
-
-```
-Input: nums = [2,7,11,15], target = 9
-Output: [0,1]- [array](#array)
+- [array](#array)
   - [1.Two Sum](#1two-sum)
   - [4.Median of Two Sorted Array](#4median-of-two-sorted-array)
   - [11.Container With Most Water](#11container-with-most-water)
@@ -242,6 +232,17 @@ Output: [0,1]- [array](#array)
 - [。。。](#)
   - [44.Wildcard Matching](#44wildcard-matching)
   - [50. Pow(x,n)](#50-powxn)
+# array
+
+## 1.Two Sum
+
+给定一个 没有排序的 数组中，找出其中两个数和等于目标数的索引值(有且仅有一个)。
+
+**example**
+
+```
+Input: nums = [2,7,11,15], target = 9
+Output: [0,1]
 Output: Because nums[0] + nums[1] == 9, we return [0, 1].
 ```
 
