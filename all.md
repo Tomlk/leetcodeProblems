@@ -9736,6 +9736,100 @@ vector<int> findMinHeightTrees(int n, vector<vector<int>>& edges) {
     }
 ```
 
+## 797.All Paths From Source To Target
+
+给定一个DAG(有向无环图)，找出所有从0到n-1的路径
+
+**Example 1:**
+
+ <img src="./imgs/797.png" alt="s" style="zoom:50%;" />
+
+```
+Input: graph = [[1,2],[3],[3],[]]
+Output: [[0,1,3],[0,2,3]]
+Explanation: There are two paths: 0 -> 1 -> 3 and 0 -> 2 -> 3.
+```
+
+思路：深度优先
+
+```java
+class Solution {
+    
+    private Map<Integer,Integer> pre=new HashMap<>();
+    private List<List<Integer>> rlist=new ArrayList<>();
+    private int[][] graph;
+    
+    private int n=0;
+    
+    public void dfs(int position)
+    {
+        if(position==n-1)
+        {
+            List<Integer> l=new ArrayList<>();
+            int p=position;
+            while(pre.containsKey(p))
+            {
+                l.add(p);
+                p=pre.get(p);
+            }
+            l.add(0);
+            Collections.reverse(l);
+            rlist.add(l);
+        }
+        else{
+            if(graph[position].length>0)
+            {
+                for(int i=0;i<graph[position].length;i++)
+                {
+                    pre.put(graph[position][i],position);
+                    dfs(graph[position][i]);
+                }
+            }
+        }
+        
+    }
+    public List<List<Integer>> allPathsSourceTarget(int[][] graph) {
+        n=graph.length;        
+        this.graph=graph;
+        dfs(0);
+        return rlist;
+    }
+```
+
+```java
+List<List<Integer>> res=new LinkedList<>();
+    
+    public List<List<Integer>> allPathsSourceTarget(int[][] graph)
+    {
+        LinkedList<Integer> path = new LinkedList<>();
+        traverse(graph,0,path);
+        return res;
+    }
+    
+    public void traverse(int[][] graph,int s,LinkedList<Integer> path)
+    {
+        //添加加点s到路径
+        path.addLast(s);
+        
+        int n=graph.length;
+        if(s==n-1)
+        {
+            res.add(new LinkedList<>(path));
+            path.removeLast();//回溯
+            return;
+        }
+        
+        for(int v:graph[s])
+        {
+            traverse(graph,v,path);
+        }
+        
+        path.removeLast();//回溯
+    }
+```
+
+
+
 
 
 ## 841.Keys and Rooms
