@@ -11153,63 +11153,7 @@ Output: 20
 Explanation: Maximum sum in a valid Binary search tree is obtained in root node with key equal to 3.
 ```
 
-思路：感觉需要递归：
-
-```c++
-  unordered_map<TreeNode*,bool> BSTm;
-    unordered_map<TreeNode*,pair<int,int>> bst_min_max;
-    unordered_map<TreeNode*,int> BSTn;
-    void searchBST(TreeNode* node)  //traversal
-    {
-        if(node!=nullptr)
-        {
-            if(node->left==nullptr &&node->right==nullptr)
-            {
-                bst_min_max[node]=getminandmax(node);
-                BSTm[node]=true;
-                BSTn[node]=node->val;
-            }
-            else{
-                searchBST(node->left);
-                searchBST(node->right);
-                bool flag1=(node->left==nullptr)||(node->left!=nullptr&&BSTm[node->left]==true&&bst_min_max[node->left].second<node->val);
-                bool flag2=(node->right==nullptr)||(node->right!=nullptr&&BSTm[node->right]==true&&bst_min_max[node->right].first>node->val);
-                BSTm[node]=flag1&&flag2;
-                if(BSTm[node])
-                {
-                    BSTn[node]=BSTn[node->left]+BSTn[node->right]+node->val;
-                    bst_min_max[node]=getminandmax(node);
-                }
-            }
-        }
-    }
-    pair<int,int> getminandmax(TreeNode* node)
-    {
-        int ll,rr;
-        ll=rr=node->val;
-        TreeNode *temp1,*temp2;
-        temp1=temp2=node;
-        while(temp1->left)
-            temp1=temp1->left;
-        ll=temp1->val;
-        while(temp2->right)
-            temp2=temp2->right;
-        rr=temp2->val;
-        return make_pair(ll,rr);
-    }
-    int maxSumBST(TreeNode* root) {
-        
-        searchBST(root);
-        int maxreturn=0;
-        for(auto iter=BSTn.begin();iter!=BSTn.end();iter++)
-        {
-            maxreturn=max(maxreturn,iter->second);
-        }
-        return maxreturn;
-    }
-```
-
-遗憾的是最后一个测试TLE。
+思路：感觉需要递归：遗憾的是最后一个测试TLE。
 
 证明递归耗时太久。
 
@@ -11231,6 +11175,44 @@ int maxSumBST(TreeNode* root) {
     return max_sum;
 }
 ```
+
+Java：后序遍历
+
+```java
+private int maxSum=0;
+    
+    public int maxSumBST(TreeNode root) {
+        traverse(root);
+        return maxSum;
+    }
+    
+    int[] traverse(TreeNode root){ //[0]记录 是否为bst [1] 记录最小值 [2]记录最大值 [3]记录所有结点之和
+        
+        if(Objects.isNull(root)){
+            return new int[]{
+                1,Integer.MAX_VALUE,Integer.MIN_VALUE,0
+            };
+        }
+        int[] left=traverse(root.left);
+        int[] right=traverse(root.right);
+        
+        int[] res=new int[4];
+        if(left[0]==1 && right[0]==1 && root.val>left[2] && root.val<right[1]){
+            //是bst
+            res[0]=1;
+            res[1]=Math.min(left[1],root.val);
+            res[2]=Math.max(right[2],root.val);
+            res[3]=left[3]+root.val+right[3];
+            maxSum=Math.max(maxSum,res[3]);
+        }else{
+            res[0]=0;
+        }
+        return res;
+        
+    }
+```
+
+
 
 # Recursion
 
