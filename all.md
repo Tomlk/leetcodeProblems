@@ -511,7 +511,7 @@ Output: 1
 
 **Example**
 
-![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/48.png)
+ ![](./imgs/48.png)
 
 ```
 Input: matrix = [[1,2,3],[4,5,6],[7,8,9]]
@@ -572,7 +572,7 @@ void rotate(vector<vector<int>>& matrix) {
 
 **Example 1:**
 
-![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/54.png)
+![](./imgs/54.png)
 
 ```
 Input: matrix = [[1,2,3],[4,5,6],[7,8,9]]
@@ -653,7 +653,7 @@ vector<int> spiralOrder(vector<vector<int>>& matrix) {
 
  **Example 1:**
 
- <img src="/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/59.png" style="zoom:50%;" />
+ <img src="./imgs/59.png" style="zoom:50%;" />
 
 ```
 Input: n = 3
@@ -1174,7 +1174,7 @@ Output: [["a"]]
 
 **Example1**
 
- ![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/138.png)
+ ![](./imgs/138.png)
 
 ```
 Input: head = [[7,null],[13,0],[11,4],[10,2],[1,0]]
@@ -1482,7 +1482,7 @@ ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
 
 **Example 1:**
 
- <img src="/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/24.png" alt="s" style="zoom:67%;" />
+ <img src="./imgs/24.png" alt="s" style="zoom:67%;" />
 
 ```
 Input: head = [1,2,3,4]
@@ -1521,7 +1521,7 @@ Output: [2,1,4,3]
 
 **Example 1:**
 
- ![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/25.png)
+ ![](./imgs/25.png)
 
 ```
 Input: head = [1,2,3,4,5], k = 2
@@ -2187,7 +2187,7 @@ public:
 
 **Example1**
 
- ![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/61.png)
+ ![](./imgs/61.png)
 
 ```
 Input: head = [1,2,3,4,5], k = 2
@@ -2930,7 +2930,7 @@ public:
 
 **Example 1:**
 
- ![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/74.png)
+ ![](./imgs/74.png)
 
 ```
 Input: matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 3
@@ -3420,7 +3420,7 @@ $matrix[i+1][j]>matrix[i][j]$且$matrix[i][j+1]>matrix[i][j]$
 
 **Example 1:**
 
- ![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/240.png)
+ ![](./imgs/240.png)
 
 ```
 Input: matrix = [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]], target = 5
@@ -3647,7 +3647,7 @@ public:
 
 **Example 1:**
 
-![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/62.png)
+![](./imgs/62.png)
 
 ```
 Input: m = 3, n = 7
@@ -4142,7 +4142,7 @@ int maxProfit(vector<int>& prices) {
 
 给定从2到9的数字序列，返回所有可能的字符串集合。
 
-![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/17.png)
+![](./imgs/17.png)
 
 **Example 1:**
 
@@ -4560,7 +4560,7 @@ n-皇后问题
 
 **Example 1:**
 
-![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/51.png)
+![](./imgs/51.png)
 
 ```
 Input: n = 4
@@ -4777,7 +4777,7 @@ public:
 
 **Example 1:**
 
-![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/42.png)
+![](./imgs/42.png)
 
 ```
 Input: height = [0,1,0,2,1,0,1,3,2,1,2,1]
@@ -4880,7 +4880,7 @@ int trap(vector<int>& height) {
 
 给出n个非负整数代表连续宽为1的矩形的高度，找出其中面积最大的 矩形的面积。
 
-![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/84.png)
+![](./imgs/84.png)
 
 **Example:**
 
@@ -4943,7 +4943,7 @@ int largestRectangleArea(vector<int>& heights) {
 
 **Example**
 
-![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/85.png)
+![](./imgs/85.png)
 
 ```
 Input: matrix = [["1","0","1","0","0"],["1","0","1","1","1"],["1","1","1","1","1"],["1","0","0","1","0"]]
@@ -6924,7 +6924,7 @@ bool isPowerOfTwo(int n) {
 
 给出二叉树的root节点，返回这颗二叉树的中序遍历时的节点值序列
 
-![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/94.png)
+![](./imgs/94.png)
 
 ```
 Input: root = [1,null,2,3]
@@ -7138,7 +7138,7 @@ Given n = 3, there are a total of 5 unique BST's:
 
 根据BST的条件，中序遍历该二叉树，有序即为BST。
 
-![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/98.png)
+![](./imgs/98.png)
 
 ```
 Input: root = [2,1,3]
@@ -7175,7 +7175,7 @@ Output: true
 
 给定一个BST的root节点，正好这个BST中有两个节点位置发生了交换因此，现在不满足BST条件，找到这两个节点，恢复这个BST。
 
-![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/99.png)
+![](./imgs/99.png)
 
 ```
 Input: root = [1,3,null,null,2]
@@ -7613,7 +7613,7 @@ class Solution {
 
 **Example1：**
 
- <img src="/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/113.png" alt="s" style="zoom:50%;" />
+ <img src="./imgs/113.png" alt="s" style="zoom:50%;" />
 
 ```
 Input: root = [5,4,8,11,null,13,4,7,2,null,null,5,1], targetSum = 22
@@ -7680,7 +7680,7 @@ unordered_map<TreeNode*,TreeNode*> parentn;//parent node
 
 **Example 1:**
 
- <img src="/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/114.png" alt="s" style="zoom:50%;" />
+ <img src="./imgs/114.png" alt="s" style="zoom:50%;" />
 
 ```
 Input: root = [1,2,5,3,4,null,6]
@@ -7731,7 +7731,7 @@ vector<TreeNode*> temps;
 
 
 
- <img src="/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/117.png" style="zoom:67%;" />
+ <img src="./imgs/117.png" style="zoom:67%;" />
 
 ```
 Input: root = [1,2,3,4,5,null,7]
@@ -7877,7 +7877,7 @@ public:
 
 **Example**
 
-![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/109.png)
+![](./imgs/109.png)
 
 ```
 Input: head = [-10,-3,0,5,9]
@@ -7946,7 +7946,7 @@ Output: true
 
 **Example 1:**
 
-![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/111.png)
+![](./imgs/111.png)
 
 ```
 Input: root = [3,9,20,null,null,15,7]
@@ -8413,7 +8413,7 @@ void PreorderTraversal(TreeNode* node,int h,vector<vector<int>>& result)
 
 **Example:**
 
-![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/116.png)
+![](./imgs/116.png)
 
 ```
 Input: root = [1,2,3,4,5,6,7]
@@ -8496,7 +8496,7 @@ Explanation: The endWord "cog" is not in wordList, therefore no possible transfo
 
 比如第一题
 
-<img src="/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/127.png" alt="scale" style="zoom:50%;" />
+<img src="./imgs/127.png" alt="scale" style="zoom:50%;" />
 
 ```c++
  bool haspath(string word1,string word2) //just different with 1 character
@@ -9147,7 +9147,7 @@ Output: [0.50000,2.00000,-1.00000,-1.00000]
 
 **Example 1:**
 
- <img src="/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/547.png" alt="s" style="zoom:50%;" />
+ <img src="./imgs/547.png" alt="s" style="zoom:50%;" />
 
 ```
 Input: isConnected = [[1,1,0],[1,1,0],[0,0,1]]
@@ -9156,7 +9156,7 @@ Output: 2
 
 **Example 2:**
 
- <img src="/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/547a.png" alt="s" style="zoom:50%;" />
+ <img src="./imgs/547a.png" alt="s" style="zoom:50%;" />
 
 ```
 Input: isConnected = [[1,0,0],[0,1,0],[0,0,1]]
@@ -9242,7 +9242,7 @@ vector<int> findRedundantConnection(vector<vector<int>>& edges) {
 
 **Example 1:**
 
- <img src="/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/685.png" style="zoom:50%;" />
+ <img src="./imgs/685.png" style="zoom:50%;" />
 
 ```
 Input: edges = [[1,2],[1,3],[2,3]]
@@ -9610,7 +9610,7 @@ vector<int> visitorder;
 
 **Example 1:**
 
-![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/310a.png)
+![](./imgs/310a.png)
 
 ```
 Input: n = 4, edges = [[1,0],[1,2],[1,3]]
@@ -9620,7 +9620,7 @@ Explanation: As shown, the height of the tree is 1 when the root is the node wit
 
 **Example 2:**
 
- <img src="/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/310b.png" style="zoom:67%;" />
+ <img src="./imgs/310b.png" style="zoom:67%;" />
 
 ```
 Input: n = 6, edges = [[3,0],[3,1],[3,2],[3,4],[5,4]]
@@ -10650,37 +10650,49 @@ public:
 
 设计一个数据结构能将二叉树编码成字符串，并且能够将字符串解码成二叉树。
 
-思路：利用中序遍历和前序遍历恢复结果二叉树。
+思路：利用前序遍历实现，用分隔符和结束符，递归的思想
 
-```c++
-public:
+```java
+//前序遍历实现
+		String SEP=",";
+    String NULL="#";
     // Encodes a tree to a single string.
-    string serialize(TreeNode* root) {
-        if (root == nullptr) return "#";
-        return to_string(root->val)+","+serialize(root->left)+","+serialize(root->right);
+    public String serialize(TreeNode root) {
+        StringBuilder sb=new StringBuilder();
+        serialzie(root,sb);
+        return sb.toString();
+        
+    }
+    void serialzie(TreeNode root,StringBuilder sb){
+        if(root==null){
+            sb.append(NULL).append(SEP);
+            return;
+        }
+        
+        sb.append(root.val).append(SEP);
+        
+        serialzie(root.left,sb);
+        serialzie(root.right,sb);
     }
 
     // Decodes your encoded data to tree.
-    TreeNode* deserialize(string data) {
-        return mydeserialize(data);
-    }
-    TreeNode* mydeserialize(string& data) {
-        if (data[0]=='#') {
-            if(data.size() > 1) data = data.substr(2);
-            return nullptr;
-        } else {
-            TreeNode* node = new TreeNode(helper(data));
-            node->left = mydeserialize(data);
-            node->right = mydeserialize(data);
-            return node;
+    public TreeNode deserialize(String data) {
+        LinkedList<String> nodes=new LinkedList<>();
+        for(String s: data.split(SEP)){
+            nodes.addLast(s);
         }
+        return deserialize(nodes);
     }
-private:
-    int helper(string& data) {
-        int pos = data.find(',');
-        int val = stoi(data.substr(0,pos));
-        data = data.substr(pos+1);
-        return val;
+    TreeNode deserialize(LinkedList<String> nodes){
+        if(nodes.isEmpty()) return null;
+        
+        String first=nodes.removeFirst();
+        if(first.equals(NULL)) return null;
+        TreeNode root=new TreeNode(Integer.valueOf(first));
+        
+        root.left=deserialize(nodes);
+        root.right=deserialize(nodes);
+        return root;
     }
 ```
 
@@ -10802,7 +10814,7 @@ public:
 
 **Example 1:**
 
-![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/1203.png)
+![](./imgs/1203.png)
 
 ```
 Input: n = 8, m = 2, group = [-1,-1,1,0,0,1,0,-1], beforeItems = [[],[6],[5],[6],[3,6],[],[],[]]
@@ -10985,7 +10997,7 @@ public:
 
 二叉搜索树的节点各不相同，使每个节点为原树中大于或等于其node值的值之和。
 
- <img src="/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/538.png" style="zoom:50%;" />
+ <img src="./imgs/538.png" style="zoom:50%;" />
 
 
 
@@ -11015,7 +11027,7 @@ private int sum=0;
 
 **Example 1:**
 
-![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/1382.png)
+![](./imgs/1382.png)
 
 ```
 Input: root = [1,null,2,null,3,null,4,null,null]
@@ -11078,7 +11090,7 @@ Explanation: This is not the only correct answer, [3,1,4,null,2,null,null] is al
 
 **Example:**
 
-![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/1038.png)
+![](./imgs/1038.png)
 
 ```
 Input: root = [4,1,6,0,2,5,7,null,null,null,3,null,null,null,8]
@@ -11145,7 +11157,7 @@ Output: [3,3,2]
 
 **Example**
 
-![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/1373.png)
+![](./imgs/1373.png)
 
 ```
 Input: root = [1,4,3,2,4,2,5,null,null,null,null,null,null,4,6]
@@ -11222,7 +11234,7 @@ private int maxSum=0;
 
 **Example 1:**
 
- ![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/124_1.png)
+ ![](./imgs/124_1.png)
 
 ```
 Input: root = [1,2,3]
@@ -11231,7 +11243,7 @@ Output: 6
 
 **Example 2:**
 
- ![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/124_2.png)
+ ![](./imgs/124_2.png)
 
 ```
 Input: root = [-10,9,20,null,null,15,7]
@@ -11336,14 +11348,14 @@ int longestSubstring(string s, int& k) {
 
 **Example 1:**
 
- <img src="/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/669a.png" alt="s" style="zoom:67%;" />
+ <img src="./imgs/669a.png" alt="s" style="zoom:67%;" />
 
 ```
 Input: root = [1,0,2], low = 1, high = 2
 Output: [1,null,2]
 ```
 
- <img src="/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/669b.png" style="zoom:67%;" />
+ <img src="./imgs/669b.png" style="zoom:67%;" />
 
 ```
 Input: root = [3,0,4,null,2,null,null,1], low = 1, high = 3
@@ -11376,7 +11388,7 @@ TreeNode* trimBST(TreeNode* root, int& low, int& high) {
 
 **Example 1:**
 
-![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/687_1.png)
+![](./imgs/687_1.png)
 
 ```
 Input: root = [5,4,5,1,1,5]
@@ -11385,7 +11397,7 @@ Output: 2
 
 **Example 2:**
 
-![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/687_2.png)
+![](./imgs/687_2.png)
 
 ```
 Input: root = [1,4,5,4,4,5]
@@ -11487,7 +11499,7 @@ Output: [[0,0,0,null,null,0,0,null,null,0,0],[0,0,0,null,null,0,0,0,0],[0,0,0,0,
 Explanation:
 ```
 
-![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/894.png)
+![](./imgs/894.png)
 
 思路：观察到：若要构成这样的树，N一定为单数。
 
@@ -11530,7 +11542,7 @@ Explanation:
 
 **Example 1:**
 
-![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/897.png)
+![](./imgs/897.png)
 
 ```
 Input: root = [5,3,6,2,4,null,8,1,null,null,null,7,9]
@@ -11712,7 +11724,7 @@ f(3) = 1/2
 
 **Example 1:**
 
-![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/1503.jpg)
+![](./imgs/1503.jpg)
 
 ```
 Input: n = 4, left = [4,3], right = [0,1]
@@ -12888,7 +12900,7 @@ int longestOnes(vector<int>& A, int K) {
 
 **Example 1:**
 
-![](/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/850.png)
+![](./imgs/850.png)
 
 ```
 Input: rectangles = [[0,0,2,2],[1,0,2,3],[1,0,3,1]]
