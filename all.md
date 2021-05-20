@@ -20,6 +20,7 @@
   - [21.Merge Two Sorted Lists](#21merge-two-sorted-lists)
   - [24. Swap Nodes in Pairs](#24-swap-nodes-in-pairs)
   - [25. Reverse Nodes in k-Group](#25-reverse-nodes-in-k-group)
+  - [341.Flatten Nested List Iterator](#341flatten-nested-list-iterator)
 - [Math](#math)
   - [7.Reverse Integer](#7reverse-integer)
   - [9.Palindrome Number](#9palindrome-number)
@@ -133,6 +134,7 @@
   - [113.Path Sum II](#113path-sum-ii)
   - [114. Flatten Binary Tree to Linked List](#114-flatten-binary-tree-to-linked-list)
   - [117.Populating Next Right Pointers in Each Node II](#117populating-next-right-pointers-in-each-node-ii)
+  - [236.Lowest Common Ancestor of a Binary Tree](#236lowest-common-ancestor-of-a-binary-tree)
   - [652. Find Duplicate Subtrees](#652-find-duplicate-subtrees)
 - [DFS](#dfs)
   - [108.Convert Sorted Array to Binary Search Tree](#108convert-sorted-array-to-binary-search-tree)
@@ -1638,6 +1640,92 @@ ListNode reverse(ListNode a, ListNode b) {
         // 递归反转后续链表并连接起来
         a.next = reverseKGroup(b, k);
         return newHead;
+    }
+```
+
+## 341.Flatten Nested List Iterator
+
+扁平化嵌套列表迭代器
+
+```java
+public class NestedInteger {
+    // 如果其中存的是一个整数，则返回 true，否则返回 false
+    public boolean isInteger();
+
+    // 如果其中存的是一个整数，则返回这个整数，否则返回 null
+    public Integer getInteger();
+
+    // 如果其中存的是一个列表，则返回这个列表，否则返回 null
+    public List<NestedInteger> getList();
+}
+```
+
+**Example 1:**
+
+```
+Input: nestedList = [[1,1],2,[1,1]]
+Output: [1,1,2,1,1]
+Explanation: By calling next repeatedly until hasNext returns false, the order of elements returned by next should be: [1,1,2,1,1].
+```
+
+解法：递归
+
+```java
+private LinkedList<Integer> list;
+    //recursion get a list
+    private void dfs(List<NestedInteger> nestedList){
+        for(NestedInteger ni:nestedList){
+            if(ni.isInteger()){
+                list.addLast(ni.getInteger());
+            }
+            else{
+                dfs(ni.getList());
+            }
+        }
+    }
+    public NestedIterator(List<NestedInteger> nestedList) {
+        list=new LinkedList<>();
+        dfs(nestedList);
+    }
+
+    @Override
+    public Integer next() {
+        if(hasNext()){
+            return list.pollFirst();
+        }
+       return -1;
+    }
+
+    @Override
+    public boolean hasNext() {
+        return list.size()>0;
+    }
+```
+
+优化内存空间：
+
+```java
+private LinkedList<NestedInteger> list;
+    
+    public NestedIterator(List<NestedInteger> nestedList) {
+        list=new LinkedList<NestedInteger>(nestedList);
+    }
+
+    @Override
+    public Integer next() {
+        return list.pollFirst().getInteger();
+    }
+
+    @Override
+    public boolean hasNext() {
+        while(!list.isEmpty() && !list.peekFirst().isInteger()){
+            List<NestedInteger> first=list.pollFirst().getList();
+            for(int i=first.size()-1;i>=0;i--){
+                list.addFirst(first.get(i));
+            }
+        }
+        return !list.isEmpty();
+        
     }
 ```
 
@@ -7773,6 +7861,42 @@ Node* connect(Node* root) {
         //delete cur;
         delete dummy;
         return root;
+    }
+```
+
+
+
+## 236.Lowest Common Ancestor of a Binary Tree
+
+找两个节点的最近公共祖先
+
+**Example 1:**
+
+ <img src="./imgs/236.png" style="zoom:50%;" />
+
+```
+Input: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1
+Output: 3
+Explanation: The LCA of nodes 5 and 1 is 3.
+```
+
+递归的思想
+
+```java
+public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if(root==null)
+            return null;
+        if(root==p || root==q)
+            return root;
+        
+        TreeNode left=lowestCommonAncestor(root.left,p,q);
+        TreeNode right=lowestCommonAncestor(root.right,p,q);
+        
+        if(left!=null && right!=null) //左边能找到一个数，右边也能找到一个数，那肯定就是最近的祖宗了
+            return root;
+        if(left==null && right==null)//左右都一个找不到，没有祖宗
+            return null;
+        return left==null?right:left;//哪边找到则哪边是祖宗
     }
 ```
 
