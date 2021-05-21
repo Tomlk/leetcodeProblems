@@ -134,6 +134,7 @@
   - [113.Path Sum II](#113path-sum-ii)
   - [114. Flatten Binary Tree to Linked List](#114-flatten-binary-tree-to-linked-list)
   - [117.Populating Next Right Pointers in Each Node II](#117populating-next-right-pointers-in-each-node-ii)
+  - [222.Count Complete Tree Nodes](#222count-complete-tree-nodes)
   - [236.Lowest Common Ancestor of a Binary Tree](#236lowest-common-ancestor-of-a-binary-tree)
   - [652. Find Duplicate Subtrees](#652-find-duplicate-subtrees)
 - [DFS](#dfs)
@@ -7866,6 +7867,43 @@ Node* connect(Node* root) {
 
 
 
+## 222.Count Complete Tree Nodes
+
+求完全二叉树的节点数。
+
+**Example 1:**
+
+ <img src="./imgs/222.png" style="zoom:50%;" />
+
+```
+Input: root = [1,2,3,4,5,6]
+Output: 6
+```
+
+思路：如何做到小于O(n)的时间复杂度。
+
+```java
+public int countNodes(TreeNode root) {
+        TreeNode l=root,r=root;
+        int hl=0,hr=0;
+        while(l!=null){
+            l=l.left;
+            hl++;
+        }
+        while(r!=null){
+            r=r.right;
+            hr++;
+        }
+        if(hl==hr)
+            return (int)Math.pow(2,hl)-1;
+        
+        return 1+countNodes(root.left)+countNodes(root.right);
+        
+    }
+```
+
+时间复杂度：$O(log_2N)\cdot O(log_2N)$
+
 ## 236.Lowest Common Ancestor of a Binary Tree
 
 找两个节点的最近公共祖先
@@ -8882,6 +8920,65 @@ Output:
 
 
 # Union Find(并查集)
+
+思想：
+
+```java
+class UF {
+    // 连通分量个数
+    private int count;
+    // 存储一棵树
+    private int[] parent;
+    // 记录树的“重量”
+    private int[] size;
+
+    public UF(int n) {
+        this.count = n;
+        parent = new int[n];
+        size = new int[n];
+        for (int i = 0; i < n; i++) {
+            parent[i] = i;
+            size[i] = 1;
+        }
+    }
+
+    public void union(int p, int q) { //O(1)
+        int rootP = find(p);
+        int rootQ = find(q);
+        if (rootP == rootQ)
+            return;
+
+        // 小树接到大树下面，较平衡
+        if (size[rootP] > size[rootQ]) {
+            parent[rootQ] = rootP;
+            size[rootP] += size[rootQ];
+        } else {
+            parent[rootP] = rootQ;
+            size[rootQ] += size[rootP];
+        }
+        count--;
+    }
+
+    public boolean connected(int p, int q) { //O(1)
+        int rootP = find(p);
+        int rootQ = find(q);
+        return rootP == rootQ;
+    }
+
+    private int find(int x) { //O(1)
+        while (parent[x] != x) {
+            // 进行路径压缩
+            parent[x] = parent[parent[x]];
+            x = parent[x];
+        }
+        return x;
+    }
+
+    public int count() {
+        return count;
+    }
+}
+```
 
 ## 128.Longest consecutive Sequence
 
