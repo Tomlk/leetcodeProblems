@@ -10208,114 +10208,7 @@ lRUCache.get(3);    // return 3
 lRUCache.get(4);    // return 4
 ```
 
-思路：考虑记录距离上一次使用时间。
-
-```c++
-unordered_map<int,pair<int,int>> m;// pair: first:value second:last use time
-    int maxsize;
-    LRUCache(int capacity) {
-        maxsize=capacity;
-    }
-    
-    int get(int key) {
-        if(m.find(key)!=m.end())
-        {
-            for(auto iter=m.begin();iter!=m.end();iter++)
-            {
-                (iter->second).second+=1;
-            }  
-            m[key].second=0;
-            return m[key].first;
-        }
-        return -1;
-    }
-    
-    void commonput(int key, int value)
-    {
-         for(auto iter=m.begin();iter!=m.end();iter++)
-            {
-                (iter->second).second+=1;
-            }  
-        m[key]=make_pair(value,0);
-    }
-    
-    void put(int key, int value) {
-        if(m.find(key)!=m.end())
-        {
-            for(auto iter=m.begin();iter!=m.end();iter++)
-            {
-                (iter->second).second+=1;
-            }  
-            m[key].first=value;
-            m[key].second=0;
-        }
-        else{
-            if(m.size()>=maxsize)
-            {
-                //find max time to erase
-                int maxtimekey=m.begin()->first;
-                int maxtime=0;
-                for(auto iter=m.begin();iter!=m.end();iter++)
-                {
-                    if((iter->second).second>=maxtime)
-                    {
-                        maxtime=(iter->second).second;
-                        maxtimekey=iter->first;
-                    }
-                }
-                m.erase(maxtimekey);
-            }
-            commonput(key,value);   
-        }
-        
-    }
-```
-
-思路没有错，但最后一个测试用例TLE。
-
-简化，利用list的push_back和erase
-
-```c++
-unordered_map<int,int> mym;// 
-    list<int> myl;//use list's push_back pop_front remove
-    int maxsize;
-    LRUCache(int capacity) {
-        maxsize=capacity;
-    }
-    
-    int get(int key) {
-        if(mym.find(key)!=mym.end())
-        {
-            myl.remove(key);
-            myl.push_back(key);
-            return mym[key];
-        }
-        return -1;
-    }
-    
-    void put(int key, int value) {
-        if(mym.find(key)!=mym.end())
-        {
-            mym[key]=value;
-            myl.remove(key);
-            myl.push_back(key);
-        }
-        else{
-            if(mym.size()>=maxsize)
-            {
-                int deletekey=*myl.begin();
-                mym.erase(deletekey);
-                myl.pop_front();
-            }
-            mym.insert(make_pair(key,value));
-            myl.push_back(key);
-           
-        }
-        
-    }
-```
-
-更快：
+C++：
 
 ```c++
  unordered_map<int,list<pair<int,int>>::iterator > mym;//
@@ -10383,6 +10276,49 @@ private LinkedHashMap<Integer,Integer> map;
         map.put(key,value);
     }
 ```
+
+```java
+class LRUCache {
+
+    private int cap;
+    private LinkedHashMap<Integer,Integer> map=new LinkedHashMap<>();
+        
+    public LRUCache(int capacity) {
+        cap=capacity;
+    }
+    
+    public int get(int key) {
+        if(map.containsKey(key)){
+            makeRecently(key);
+            return map.get(key);
+        }
+        return -1;
+    }
+    
+    public void put(int key, int value) {
+        if(map.containsKey(key)){
+            map.put(key,value);
+            makeRecently(key);
+            return ;
+        }
+        else{
+            map.put(key,value);
+            if(map.size()>cap){
+                int oldestKey=map.keySet().iterator().next(); //头部就是最久没用的
+                map.remove(oldestKey);
+            }
+        }
+    }
+    
+    private void makeRecently(int key){
+        int val=map.get(key);
+        map.remove(key);
+        map.put(key,val);
+    }
+}
+```
+
+
 
 ## 155.Min Stack
 
