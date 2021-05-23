@@ -181,6 +181,7 @@
   - [232.Implement Queue using Stacks](#232implement-queue-using-stacks)
   - [284.Peeking Iterator](#284peeking-iterator)
   - [<font color=red>297.Serialize and Deserialize Binary Tree</font>](#font-colorred297serialize-and-deserialize-binary-treefont)
+  - [460.LFU cache](#460lfu-cache)
   - [705. Design HashSet](#705-design-hashset)
   - [706.Design HashMap](#706design-hashmap)
 - [Topological Sort(拓扑排序)](#topological-sort拓扑排序)
@@ -10852,6 +10853,148 @@ public:
         return root;
     }
 ```
+
+## 460.LFU cache
+
+LFU：插入新数据时，如果容量满了，删除最少频次使用的值。
+
+
+
+
+
+思路：
+
+1、调用 `get(key)` 方法时，要返回该 `key` 对应的 `val`。
+
+2、只要用 `get` 或者 `put` 方法访问一次某个 `key`，该 `key` 的 `freq` 就要加一。
+
+3、如果在容量满了的时候进行插入，则需要将 `freq` 最小的 `ke3、这个需求应该是 LFU 算法的核心，所以我们分开说。`
+
+`
+3.1、首先，肯定是需要 freq 到 key 的映射，用来找到 freq 最小的 key。
+3.2、将 freq 最小的 key 删除，那你就得快速得到当前所有 key 最小的 freq 是多少。想要时间复杂度 O(1) 的话，肯定不能遍历一遍去找，那就用一个变量 minFreq 来记录当前最小的 freq 吧。
+3.3、可能有多个 key 拥有相同的 freq，所以 freq 对 key 是一对多的关系，即一个 freq 对应一个 key 的列表。
+3.4、希望 freq 对应的 key 的列表是存在时序的，便于快速查找并删除最旧的 key。
+3.5、希望能够快速删除 key 列表中的任何一个 key，因为如果频次为 freq 的某个 key 被访问，那么它的频次就会变成 freq+1，就应该从 freq 对应的 key 列表中删除，加到 freq+1 对应的 key 的列表中。y` 删除，如果最小的 `freq` 对应多个 `key`，则删除其中最旧的那一个。
+
+
+
+```java
+class LFUCache {
+    // key 到 val 的映射，我们后文称为 KV 表
+    HashMap<Integer, Integer> keyToVal;
+    // key 到 freq 的映射，我们后文称为 KF 表
+    HashMap<Integer, Integer> keyToFreq;
+    // freq 到 key 列表的映射，我们后文称为 FK 表
+    HashMap<Integer, LinkedHashSet<Integer>> freqToKeys;
+    // 记录最小的频次
+    int minFreq;
+    // 记录 LFU 缓存的最大容量
+    int cap;
+
+    public LFUCache(int capacity) {
+        keyToVal = new HashMap<>();
+        keyToFreq = new HashMap<>();
+        freqToKeys = new HashMap<>();
+        this.cap = capacity;
+        this.minFreq = 0;
+    }
+
+    public int get(int key) {}
+
+    public void put(int key, int val) {}
+
+}
+```
+
+
+
+最终解法：
+
+```java
+ HashMap<Integer,Integer> keyToVal;
+    HashMap<Integer,Integer> keyToFreq;
+    HashMap<Integer,LinkedHashSet<Integer> > freqToKeys;
+    
+    int minFreq;
+    
+    int cap;
+    
+    public LFUCache(int capacity) {
+        keyToVal=new HashMap<>();
+        keyToFreq=new HashMap<>();
+        freqToKeys=new HashMap<>();
+        this.cap=capacity;
+        this.minFreq=0;
+    }
+    
+   public int get(int key) {
+       
+      // System.out.println("get:"+key);
+        if(!keyToVal.containsKey(key)){
+            return -1;
+        }
+        //else
+        increaseFreq(key);
+        return keyToVal.get(key);
+    }
+    
+    public void put(int key, int value) {
+     //   System.out.println("key:"+key+" value:"+value);
+        if(this.cap<=0) return;
+        
+        //若key 已存在，修改对应的val即可
+        if(keyToVal.containsKey(key)){
+            keyToVal.put(key,value);
+            //key 对应的freq +1
+            increaseFreq(key);
+            return;
+        }
+        //key不存在，需要插入
+        //先判断容量
+        if(this.cap<=keyToVal.size()){
+            removeMinFreqKey();
+        }
+        //插入key 和val
+        keyToVal.put(key,value);
+        keyToFreq.put(key,1);
+        freqToKeys.putIfAbsent(1,new LinkedHashSet<>());
+        freqToKeys.get(1).add(key);
+        this.minFreq=1;
+    }
+    
+    private void removeMinFreqKey(){
+        LinkedHashSet<Integer> keyList=freqToKeys.get(this.minFreq);
+        int deleteKey=keyList.iterator().next();
+        
+        keyList.remove(deleteKey);
+        if(keyList.isEmpty()){
+            freqToKeys.remove(this.minFreq);
+            //这里需要更新minFreq吗 
+        }
+        keyToVal.remove(deleteKey);
+        keyToFreq.remove(deleteKey);
+    }
+    
+    private void increaseFreq(int key){
+        int freq=keyToFreq.get(key);
+        keyToFreq.put(key,freq+1);
+        
+        freqToKeys.get(freq).remove(key);
+        freqToKeys.putIfAbsent(freq+1,new LinkedHashSet<>());
+        freqToKeys.get(freq+1).add(key);
+        if(freqToKeys.get(freq).isEmpty()){
+            freqToKeys.remove(freq);
+            if(freq==this.minFreq){
+                this.minFreq+=1;
+            }
+        }
+    }
+```
+
+
+
+
 
 
 
