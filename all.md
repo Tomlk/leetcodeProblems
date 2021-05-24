@@ -84,6 +84,7 @@
   - [85.Maximal Rectangle](#85maximal-rectangle)
   - [94、Binary Tree Inorder Traversal](#94binary-tree-inorder-traversal)
   - [144、Binary Tree Preorder Traversal](#144binary-tree-preorder-traversal)
+  - [895.Maximum Frequency Stack](#895maximum-frequency-stack)
 - [Heap](#heap)
   - [239. Sliding Window Maximum](#239-sliding-window-maximum)
   - [264.Ugly Number II](#264ugly-number-ii)
@@ -5157,6 +5158,51 @@ vector<int> preorderTraversal(TreeNode* root) {
             }
         }
         return result;
+    }
+```
+
+
+
+## 895.Maximum Frequency Stack
+
+void push（int val）将整数val推送到堆栈顶部。
+
+int pop（）删除并返回堆栈中最频繁的元素。
+
+如果最频繁的元素有一个tie，那么最靠近堆栈顶部的元素将被移除并返回。
+
+```java
+ int maxFreq=0;
+    HashMap<Integer,Integer> valToFreq=new HashMap<>();
+    HashMap<Integer,Stack<Integer>> freqToVals=new HashMap<>();
+    public FreqStack() {
+        
+    }
+    
+    public void push(int val) {
+        // 修改 VF 表：val 对应的 freq 加一
+        int freq = valToFreq.getOrDefault(val, 0) + 1;
+        valToFreq.put(val, freq);
+        // 修改 FV 表：在 freq 对应的列表加上 val
+        freqToVals.putIfAbsent(freq, new Stack<>());
+        freqToVals.get(freq).push(val);
+        // 更新 maxFreq
+        maxFreq = Math.max(maxFreq, freq);
+    }
+    
+    public int pop() {
+         // 修改 FV 表：pop 出一个 maxFreq 对应的元素 v
+        Stack<Integer> vals = freqToVals.get(maxFreq);
+        int v = vals.pop();
+        // 修改 VF 表：v 对应的 freq 减一
+        int freq = valToFreq.get(v) - 1;
+        valToFreq.put(v, freq);
+        // 更新 maxFreq
+        if (vals.isEmpty()) {
+            // 如果 maxFreq 对应的元素空了
+            maxFreq--;
+        }
+        return v;
     }
 ```
 
