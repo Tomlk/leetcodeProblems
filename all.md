@@ -180,6 +180,7 @@
   - [211. Design Add and Search Words Data Structure](#211-design-add-and-search-words-data-structure)
   - [225. Implement Stack using Queues](#225-implement-stack-using-queues)
   - [232.Implement Queue using Stacks](#232implement-queue-using-stacks)
+  - [294.Find Median from Data Stream](#294find-median-from-data-stream)
   - [284.Peeking Iterator](#284peeking-iterator)
   - [<font color=red>297.Serialize and Deserialize Binary Tree</font>](#font-colorred297serialize-and-deserialize-binary-treefont)
   - [460.LFU cache](#460lfu-cache)
@@ -10774,6 +10775,71 @@ myQueue.empty(); // return false
         return (s.size()==0);
     }
 ```
+
+## 294.Find Median from Data Stream
+
+找到数据流的中位数
+
+**Example 1:**
+
+```java
+Input
+["MedianFinder", "addNum", "addNum", "findMedian", "addNum", "findMedian"]
+[[], [1], [2], [], [3], []]
+Output
+[null, null, null, 1.5, null, 2.0]
+
+Explanation
+MedianFinder medianFinder = new MedianFinder();
+medianFinder.addNum(1);    // arr = [1]
+medianFinder.addNum(2);    // arr = [1, 2]
+medianFinder.findMedian(); // return 1.5 (i.e., (1 + 2) / 2)
+medianFinder.addNum(3);    // arr[1, 2, 3]
+medianFinder.findMedian(); // return 2.0
+```
+
+优先队列：
+
+```java
+class MedianFinder {
+
+   /** initialize your data structure here. */
+    
+    PriorityQueue<Integer> large;//小顶堆
+    PriorityQueue<Integer> small;//大顶堆
+    public MedianFinder() {
+         large=new PriorityQueue<>();
+         small=new PriorityQueue<>((a,b)->{
+             return b-a;
+         });
+        
+    }
+    
+    public void addNum(int num) {  
+        if(small.size()>=large.size()){
+            small.offer(num);
+            large.offer(small.poll());
+        }else{
+            large.offer(num);
+            small.offer(large.poll());
+        }
+        
+        
+    }
+    
+    public double findMedian() {
+        if(small.size()==large.size()){
+            double d=small.peek()+large.peek();
+            return d/2;
+        }
+        else{
+            return small.size()>large.size()?small.peek():large.peek();
+        }
+    }
+}
+```
+
+
 
 ## 284.Peeking Iterator
 
