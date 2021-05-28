@@ -84,6 +84,7 @@
   - [85.Maximal Rectangle](#85maximal-rectangle)
   - [94、Binary Tree Inorder Traversal](#94binary-tree-inorder-traversal)
   - [144、Binary Tree Preorder Traversal](#144binary-tree-preorder-traversal)
+  - [496.Next Greater Element I](#496next-greater-element-i)
   - [895.Maximum Frequency Stack](#895maximum-frequency-stack)
 - [Heap](#heap)
   - [239. Sliding Window Maximum](#239-sliding-window-maximum)
@@ -5159,6 +5160,83 @@ vector<int> preorderTraversal(TreeNode* root) {
             }
         }
         return result;
+    }
+```
+
+
+
+## 496.Next Greater Element I
+
+给你 两个数组nums1 nums2，找出nums2中 从左到右找每个比当前数大的第一个数。只要返回nums1所需要的数。
+
+**Example 1:**
+
+```
+Input: nums1 = [4,1,2], nums2 = [1,3,4,2]
+Output: [-1,3,-1]
+Explanation:
+For number 4 in the first array, you cannot find the next greater number for it in the second array, so output -1.
+For number 1 in the first array, the next greater number for it in the second array is 3.
+For number 2 in the first array, there is no next greater number for it in the second array, so output -1.
+```
+
+
+
+单调栈
+
+```java
+public int[] nextGreaterElement(int[] nums1, int[] nums2) {
+        int[] r=new int[nums2.length];
+        Stack<Integer> s=new Stack<>();
+        //倒着往里面放
+        for(int i=nums2.length-1;i>=0;i--){
+            while(!s.isEmpty() && s.peek()<=nums2[i]){
+                s.pop();
+            }
+            
+            r[i]=s.isEmpty()?-1:s.peek();
+            s.push(nums2[i]);
+        }
+        Map<Integer,Integer> m=new HashMap<>();
+        for(int i=0;i<r.length;i++)
+            m.put(nums2[i],r[i]);
+        
+        int[] re=new int[nums1.length];
+        for(int i=0;i<re.length;i++)
+            re[i]=m.get(nums1[i]);
+        
+        return re;
+        
+    }
+```
+
+使用hashtmap
+
+```java
+public int[] nextGreaterElement(int[] nums1, int[] nums2) {
+        Map<Integer,Integer> m=new HashMap<Integer,Integer>();
+        for(int i=0;i<nums2.length;i++)
+        {
+            m.put(nums2[i],i);
+        }
+        
+        int[] r=new int[nums1.length];
+        for(int i=0;i<nums1.length;i++)
+        {
+            boolean find=false;
+            for(int j=m.get(nums1[i]);j<nums2.length;j++){
+                if(nums2[j]>nums1[i])
+                {
+                    r[i]=nums2[j];
+                    find=true;
+                    break;
+                }
+            }
+            if(!find)
+                r[i]=-1;
+        }
+        
+        return r;
     }
 ```
 
