@@ -85,6 +85,8 @@
   - [94、Binary Tree Inorder Traversal](#94binary-tree-inorder-traversal)
   - [144、Binary Tree Preorder Traversal](#144binary-tree-preorder-traversal)
   - [496.Next Greater Element I](#496next-greater-element-i)
+  - [739.Daily Temperatures](#739daily-temperatures)
+  - [](#)
   - [895.Maximum Frequency Stack](#895maximum-frequency-stack)
 - [Heap](#heap)
   - [239. Sliding Window Maximum](#239-sliding-window-maximum)
@@ -237,7 +239,7 @@
   - [1288. Remove Covered Intervals](#1288-remove-covered-intervals)
 - [Deque](#deque)
   - [1696. Jump Game VI](#1696-jump-game-vi)
-- [。。。](#)
+- [。。。](#-1)
   - [44.Wildcard Matching](#44wildcard-matching)
   - [50. Pow(x,n)](#50-powxn)
 # array
@@ -5240,7 +5242,32 @@ public int[] nextGreaterElement(int[] nums1, int[] nums2) {
     }
 ```
 
+## 739.Daily Temperatures
 
+温度问题：一个数组代表每日气温，找出往后距离当前天最近的温度值比当前天温度温暖的天数距离。如果没有则返回0。
+
+For example, given the list of temperatures `temperatures = [73, 74, 75, 71, 69, 72, 76, 73]`, your output should be `[1, 1, 4, 2, 1, 1, 0, 0]`.
+
+思路：类似496.利用单调栈。
+
+```java
+class Solution {
+    public int[] dailyTemperatures(int[] temperatures) {
+        Stack<Integer> s=new Stack<>();
+        int n=temperatures.length;
+        int[] r=new int[n];
+        for(int i=n-1;i>=0;i--){
+            while(s.isEmpty()==false && temperatures[s.peek()]<=temperatures[i])
+                s.pop();
+            r[i]=s.isEmpty()?0:s.peek()-i;
+            s.push(i);
+        }
+        return r;
+    }
+}
+```
+
+## 
 
 ## 895.Maximum Frequency Stack
 
