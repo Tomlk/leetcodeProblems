@@ -12272,6 +12272,73 @@ int getLastMoment(int n, vector<int>& left, vector<int>& right) {
 
 # Queue
 
+## 293.Sliding Window Maximum
+
+找出每个时刻滑动窗口的最大值
+
+**Example 1:**
+
+```
+Input: nums = [1,3,-1,-3,5,3,6,7], k = 3
+Output: [3,3,5,5,6,7]
+Explanation: 
+Window position                Max
+---------------               -----
+[1  3  -1] -3  5  3  6  7       3
+ 1 [3  -1  -3] 5  3  6  7       3
+ 1  3 [-1  -3  5] 3  6  7       5
+ 1  3  -1 [-3  5  3] 6  7       5
+ 1  3  -1  -3 [5  3  6] 7       6
+ 1  3  -1  -3  5 [3  6  7]      7
+```
+
+思路：用一个单调队列存储目前的应该出队的情况队列(单调递减)
+
+```java
+class Solution {
+    class MonotonicQueue{
+        
+        private LinkedList<Integer> q=new LinkedList<>();
+        
+        public void push(int n){
+            while(!q.isEmpty() && q.getLast()<n){
+                q.pollLast();
+            }
+            q.addLast(n);
+        }
+        public int max(){
+            return q.getFirst();
+        }
+        public void pop(int n){
+            if(n==q.getFirst())
+                q.pollFirst();
+            //如果已经被压扁则不存在，无需删除
+        }
+    }
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        MonotonicQueue window=new MonotonicQueue();
+        
+        ArrayList<Integer> res=new ArrayList<>();
+        
+        for(int i=0;i<nums.length;i++){
+            if(i<k-1){
+                window.push(nums[i]);
+            }else{
+                window.push(nums[i]); //k个
+                res.add(window.max());
+                window.pop(nums[i-k+1]);
+            }
+        }
+        
+        int[] arr=new int[res.size()];
+        for(int i=0;i<res.size();i++)
+            arr[i]=res.get(i);
+        
+        return arr;
+    }
+}
+```
+
 ## 621. Task Scheduler
 
 给定一个任务列表tasks，代表CPU需要做的任务，其中每个字符代表着不同的task，可以以任意顺序处理这些tasks，每个task需要一个unit的时间。对于每一个单位时间，CPU要么处理一个task 要么处于休息状态IDLE。
