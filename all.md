@@ -88,8 +88,6 @@
   - [739.Daily Temperatures](#739daily-temperatures)
   - [](#)
   - [895.Maximum Frequency Stack](#895maximum-frequency-stack)
-- [Heap](#heap)
-  - [239. Sliding Window Maximum](#239-sliding-window-maximum)
   - [264.Ugly Number II](#264ugly-number-ii)
   - [295.Find Median from Data Stream](#295find-median-from-data-stream)
   - [347. Top K Frequent Elements](#347-top-k-frequent-elements)
@@ -213,6 +211,7 @@
   - [1227. Airplane Seat Assignment Probability](#1227-airplane-seat-assignment-probability)
   - [1503. Last Moment Before All Ants Fall Out of a Plank](#1503-last-moment-before-all-ants-fall-out-of-a-plank)
 - [Queue](#queue)
+  - [239.Sliding Window Maximum](#239sliding-window-maximum)
   - [621. Task Scheduler](#621-task-scheduler)
   - [622. Design Circular Queue](#622-design-circular-queue)
   - [641.Design Circular Deque](#641design-circular-deque)
@@ -231,7 +230,7 @@
 - [Sliding Window](#sliding-window)
   - [3. Longest Substring Without Repeating Characters](#3-longest-substring-without-repeating-characters-1)
   - [76. Minimum Window Substring](#76-minimum-window-substring)
-  - [239.Sliding Window Maximum](#239sliding-window-maximum)
+  - [239.Sliding Window Maximum](#239sliding-window-maximum-1)
   - [978.Longest Turbulent Subarray](#978longest-turbulent-subarray)
   - [1004. Max Consecutive Ones III](#1004-max-consecutive-ones-iii)
 - [Line Sweep](#line-sweep)
@@ -5313,79 +5312,6 @@ int pop（）删除并返回堆栈中最频繁的元素。
 ```
 
 
-
-# Heap
-
-## 239. Sliding Window Maximum
-
-给定一个序列和一个窗口长度k，窗口从最左边每次滑动一个单位，返回所有窗口中最大值形成的序列。
-
-**Example 1:**
-
-```
-Input: nums = [1,3,-1,-3,5,3,6,7], k = 3
-Output: [3,3,5,5,6,7]
-Explanation: 
-Window position                Max
----------------               -----
-[1  3  -1] -3  5  3  6  7       3
- 1 [3  -1  -3] 5  3  6  7       3
- 1  3 [-1  -3  5] 3  6  7       5
- 1  3  -1 [-3  5  3] 6  7       5
- 1  3  -1  -3 [5  3  6] 7       6
- 1  3  -1  -3  5 [3  6  7]      7
-```
-
-**Example 2:**
-
-```
-Input: nums = [1], k = 1
-Output: [1]
-```
-
-**Example 3:**
-
-```
-Input: nums = [1,-1], k = 1
-Output: [1,-1]
-```
-
-$O(n^2)$时间复杂度会超时，
-
-考虑设计双端队列q。
-
-```c++
-  vector<int> maxSlidingWindow(vector<int>& nums, int k) {
-        
-        
-        int maxn;
-        
-        deque<int> q;//window max number in the q front
-        vector<int> rvec;
-        
-        for(int i=0;i<nums.size();i++)
-        {
-            while(!q.empty()&&q.back()<nums[i])//delete number in q smaller than nums[i]
-            {
-                q.pop_back();
-            }
-            q.push_back(nums[i]);//add new number
-            if(i>=k-1){ //from k-th has the Max
-                
-                rvec.push_back(q.front());//max number
-                
-                if(q.front()==nums[i-k+1])//max number is in the window front
-                    q.pop_front();
-            }    
-            // for(auto item:q)
-            //     cout<<item<<" ";
-            // cout<<endl;
-        }
-        return rvec;
-        
-        
-    }
-```
 
 ## 264.Ugly Number II
 
@@ -12272,7 +12198,7 @@ int getLastMoment(int n, vector<int>& left, vector<int>& right) {
 
 # Queue
 
-## 293.Sliding Window Maximum
+## 239.Sliding Window Maximum
 
 找出每个时刻滑动窗口的最大值
 
