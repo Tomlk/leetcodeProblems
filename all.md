@@ -10690,58 +10690,46 @@ myStack.pop(); // return 2
 myStack.empty(); // return False
 ```
 
-思路：利用两个queue
+思路：利用1个queue
 
 ```c++
-/** Initialize your data structure here. */
-    queue<int> q1;
-    queue<int> q2;
-    MyStack() {
+class MyStack {
+
+    Queue<Integer> q;
+    int tail;
+    /** Initialize your data structure here. */
+    public MyStack() {
+        q=new LinkedList<>();
     }
     
     /** Push element x onto stack. */
-    void push(int x) {
-        q1.push(x);
+    public void push(int x) {
+        q.offer(x);
+        tail=x;
     }
     
     /** Removes the element on top of the stack and returns that element. */
-    int pop() {
-        while(q1.size()>1)
-        {
-            q2.push(q1.front());
-            q1.pop();
+    public int pop() {
+        int l=q.size();
+        int n=1;
+        while(n<l){
+            tail=q.peek();
+            q.offer(q.poll());
+            n+=1;
         }
-        int r=q1.front();
-        q1=q2;
-
-        clear(q2);
-        return r;
+        return q.poll();
     }
     
     /** Get the top element. */
-    int top() {
-        while(q1.size()>1)
-        {
-            q2.push(q1.front());
-            q1.pop();
-        }
-        int r=q1.front();
-        q2.push(r);
-        q1=q2;
-
-        clear(q2);
-        return r;
-        
+    public int top() {
+        return tail;
     }
     
     /** Returns whether the stack is empty. */
-    bool empty() {
-        return q1.empty();
+    public boolean empty() {
+        return q.isEmpty();
     }
-    void clear(queue<int>& q) {
-        queue<int> empty;
-        swap(empty, q);
-    }
+}
 ```
 
 ## 232.Implement Queue using Stacks
@@ -10766,45 +10754,46 @@ myQueue.pop(); // return 1, queue is [2]
 myQueue.empty(); // return false
 ```
 
-思路：用一个stack。
+思路：用2个stack。
 
-```c++
- stack<int> s;
+```java
+class MyQueue {
+
+    Stack<Integer> s1;
+    Stack<Integer> s2;
     
-    // Push element x to the back of queue.
-    void push(int x) {
-        pushHelper(x);
+    /** Initialize your data structure here. */
+    public MyQueue() {
+        s1=new Stack<>();
+        s2=new Stack<>();
     }
-    void pushHelper(int x){
-        if(s.size()==0){
-            s.push(x);
-            return;
+    
+    /** Push element x to the back of queue. */
+    public void push(int x) {
+        s1.push(x);
+    }
+    
+    /** Removes the element from in front of queue and returns that element. */
+    public int pop() {
+        peek();
+        return s2.pop();
+    }
+    
+    /** Get the front element. */
+    public int peek() {
+        if(s2.isEmpty()){
+            while(!s1.isEmpty())
+                s2.push(s1.pop());
         }
-        int data;
-        data = s.top();
-        s.pop();
-        pushHelper(x);
-        s.push(data);
-        return;
-        
+        return s2.peek();
+       
     }
-
-    // Removes the element from in front of queue.
-    int pop() {
-        int r=peek();
-        s.pop();
-        return r;
+    
+    /** Returns whether the queue is empty. */
+    public boolean empty() {
+        return s1.isEmpty() && s2.isEmpty();
     }
-
-    // Get the front element.
-    int peek() {
-        return s.top();
-    }
-
-    // Return whether the queue is empty.
-    bool empty() {
-        return (s.size()==0);
-    }
+}
 ```
 
 ## 294.Find Median from Data Stream
