@@ -7,6 +7,7 @@
   - [48. Rotate Image](#48-rotate-image)
   - [54. Spiral Matrix](#54-spiral-matrix)
   - [59.Spiral Matrix II](#59spiral-matrix-ii)
+  - [410.Split Array Largest Sum](#410split-array-largest-sum)
 - [Hash Table](#hash-table)
   - [3. Longest Substring Without Repeating Characters](#3-longest-substring-without-repeating-characters)
   - [18.4SUM](#184sum)
@@ -734,6 +735,91 @@ Output: [[1]]
         }
         return matricx;
     }
+```
+
+
+
+
+
+## 410.Split Array Largest Sum
+
+给定一个非负整数数组合一个整数m，你需要将这个数组分为m个非空的连续子数组。设定一个算法使得这m个子数组各自和的最大值最小。
+
+
+
+**Example 1:**
+
+```
+Input: nums = [7,2,5,10,8], m = 2
+Output: 18
+Explanation:
+There are four ways to split nums into two subarrays.
+The best way is to split it into [7,2,5] and [10,8],
+where the largest sum among the two subarrays is only 18.
+```
+
+**Example 2:**
+
+```
+Input: nums = [1,2,3,4,5], m = 2
+Output: 9
+```
+
+思路:问题转化，考虑反推：限定最大子数组和为max时，所能组成的子数组个数为多少，是否大于m还是等于m，还是小于m。即至少要有多少个子数组。
+
+```java
+class Solution {
+    public int splitArray(int[] nums, int m) {
+        int lo=getMax(nums),hi=getSum(nums);
+      //二分法
+        while(lo<hi){
+            
+            int mid=lo+(hi-lo)/2;
+            
+            int n=split(nums,mid);
+            if(n==m){
+                hi=mid;
+            }else if(n<m){
+                hi=mid;
+            }else if(n>m){
+                lo=mid+1;
+            }
+            
+        }
+        return lo;
+    }
+    
+    /*
+    辅助函数，若限制最大子数组和为 max，
+    计算 nums 至少可以被分割成几个子数组
+    */
+    private int split(int[] nums,int max){
+        int count=1;
+        int sum=0;
+        for(int i=0;i<nums.length;i++){
+            if(sum+nums[i]>max){
+                count++;
+                sum=nums[i];
+            }else{
+                sum+=nums[i];
+            }
+        }
+        return count;
+    }
+    
+    private int getMax(int[] nums){
+        int res=0;
+        for(int n:nums)
+            res=Math.max(res,n);
+        return res;
+    }
+    private int getSum(int[] nums){
+        int res=0;
+        for(int n: nums)
+            res+=n;
+        return res;
+    }
+}
 ```
 
 
