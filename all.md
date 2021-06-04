@@ -13267,6 +13267,64 @@ Output: "a"
 }
 ```
 
+Java 滑动窗口
+
+```java
+class Solution {
+    public String minWindow(String s, String t) {
+        Map<Character,Integer> need=new HashMap<>();
+        Map<Character,Integer> window=new HashMap<>();
+        
+        for(int i=0;i<t.length();i++){
+            need.put(t.charAt(i),need.getOrDefault(t.charAt(i),0)+1);
+        }
+        
+        int left=0,right=0;
+        
+        int valid=0;
+        
+        int start=0,len=Integer.MAX_VALUE;
+        while(right<s.length()){
+            char c=s.charAt(right);
+            //右移窗口
+            right+=1;
+            //窗口更新
+            if(need.containsKey(c)){
+                window.put(c,window.getOrDefault(c,0)+1);
+                if(window.get(c).equals(need.get(c)))
+                    valid+=1;
+            }
+            
+            //判断左侧窗口是否要收缩
+            while(valid==need.size()){
+                //在这里更新最小覆盖子串
+                if(right-left<len){//如果此时的窗口更小，就更新
+                    start=left;
+                    len=right-left;
+                }
+                //移除的字符
+                char d=s.charAt(left);
+                //左移窗口
+                left+=1;
+                //窗口进行一系列更新
+                if(need.containsKey(d)){
+                    if(window.get(d).equals(need.get(d)))
+                       valid-=1;
+                    window.put(d,window.get(d)-1);
+                }         
+            }
+            //得到一个窗口
+     }
+        return len==Integer.MAX_VALUE?
+            "":s.substring(start,start+len);
+    }
+}
+```
+
+
+
+
+
 ## 239.Sliding Window Maximum
 
 给定一个整数数组，和一个大小为k的滑动窗口，窗口从左至又滑动，返回每次窗口滑动前的最大值。
