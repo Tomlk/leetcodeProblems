@@ -232,6 +232,8 @@
   - [3. Longest Substring Without Repeating Characters](#3-longest-substring-without-repeating-characters-1)
   - [76. Minimum Window Substring](#76-minimum-window-substring)
   - [239.Sliding Window Maximum](#239sliding-window-maximum-1)
+  - [438.Find All Anagrams in a String](#438find-all-anagrams-in-a-string)
+  - [567.Permutation in String](#567permutation-in-string)
   - [978.Longest Turbulent Subarray](#978longest-turbulent-subarray)
   - [1004. Max Consecutive Ones III](#1004-max-consecutive-ones-iii)
 - [Line Sweep](#line-sweep)
@@ -13134,63 +13136,29 @@ Output: 1
 Explanation: The answer is "b", with the length of 1.
 ```
 
-思路：滑动窗口，依次变大窗口区间
+思路：滑动窗口，依次变大窗口
+
+滑动窗口
 
 ```c++
- int lengthOfLongestSubstring(string s) {
-        int i=0;
-        int maxL=0;
-        unordered_set<char> cs;
-        while(i<s.size())
-        {
-            cs.clear();
-            for(int j=1;j<=s.size()-i;j++)
-            {
-                int oldl=cs.size();
-                cs.insert(s[i+j-1]);
-                if(cs.size()==oldl)
-                {
-                    maxL=maxL>cs.size()?maxL:cs.size();
-                    int indextemp=i+j-1;
-                    while(s[i]!=s[indextemp])
-                        i++;
-                    i=i+1;
-                    break;
-                }
-                else if(j==s.size()-i)
-                    i=s.size();
+public int lengthOfLongestSubstring(String s) {
+        Map<Character,Integer> window=new HashMap<>();
+        int left,right;
+        left=right=0;
+        int maxLen=0;
+        while(right<s.length()){
+            char c=s.charAt(right);
+            window.put(c,window.getOrDefault(c,0)+1);
+            right+=1;
+            while(window.get(c)>1){
+                char d=s.charAt(left);
+                left+=1;
+                window.put(d,window.get(d)-1);
             }
+            
+            maxLen=Math.max(maxLen,right-left);
         }
-        maxL=maxL>cs.size()?maxL:cs.size();
-        return maxL;
-    }
-```
-
-优化时间复杂度后：
-
-```c++
-int lengthOfLongestSubstring(string s) {
-        unordered_set<char> mys;
-        int i=0;
-        int j=0;
-        int n=s.size();
-        int ans=0;
-        while(i<n&&j<n)
-        {
-            if(mys.find(s[j])==mys.end())
-            {
-                mys.insert(s[j]);
-                j++;
-                ans=max(ans,j-i);
-            }
-            else
-            {
-                mys.erase(s[i]);
-                i++;
-            }
-        }
-        return ans;
-        
+        return maxLen;
     }
 ```
 
@@ -13380,6 +13348,121 @@ Output: [1,-1]
         return rvec;
     }
 ```
+
+## 438.Find All Anagrams in a String
+
+给定一个字符串s和一个非空字符串p，找到s中所有是p的字符异位词的子串，返回起始索引。
+
+**Example 1:**
+
+```
+Input: s = "cbaebabacd", p = "abc"
+Output: [0,6]
+Explanation:
+The substring with start index = 0 is "cba", which is an anagram of "abc".
+The substring with start index = 6 is "bac", which is an anagram of "abc".
+```
+
+```java
+public List<Integer> findAnagrams(String s, String p) {
+        Map<Character,Integer> need=new HashMap<>();
+        Map<Character,Integer> window=new HashMap<>();
+        
+        List<Integer> r=new ArrayList<>();
+        for(int i=0;i<p.length();i++){
+            need.put(p.charAt(i),need.getOrDefault(p.charAt(i),0)+1);
+        }
+        
+        int left,right;
+        left=right=0;
+        int valid=0;
+        while(right<s.length()){
+            char c=s.charAt(right);
+            
+            if(need.containsKey(c)){
+                window.put(c,window.getOrDefault(c,0)+1);
+                if(window.get(c).equals(need.get(c)))
+                    valid+=1;
+            }
+            
+            right+=1;
+            
+            while(right-left>=p.length()){
+                if(valid==need.size())
+                    r.add(left);
+                
+                char d=s.charAt(left);
+                left+=1;
+                if(need.containsKey(d)){
+                    if(window.get(d).equals(need.get(d)))
+                       valid-=1;
+                    window.put(d,window.get(d)-1);
+                }   
+            }    
+        }
+        return r;
+    }
+```
+
+
+
+## 567.Permutation in String
+
+给定两个字符串t和s，判断s中是否有子串是t的一个排列。
+
+
+
+```java
+public boolean checkInclusion(String t, String s) {
+        Map<Character,Integer> need=new HashMap<>();
+        Map<Character,Integer> window=new HashMap<>();
+        
+        for(int i=0;i<t.length();i++){
+            need.put(t.charAt(i),need.getOrDefault(t.charAt(i),0)+1);
+        }
+        
+        int left=0,right=0;
+        
+        int valid=0;
+        
+        int start=0,len=Integer.MAX_VALUE;
+        while(right<s.length()){
+            char c=s.charAt(right);
+            //右移窗口
+            right+=1;
+            //窗口更新
+            if(need.containsKey(c)){
+                window.put(c,window.getOrDefault(c,0)+1);
+                if(window.get(c).equals(need.get(c)))
+                    valid+=1;
+            }
+            
+            //判断左侧窗口是否要收缩
+            while(right-left>=t.length()){
+                //在这里更新最小覆盖子串
+                if(valid==need.size())//找到了合法的子串
+                    return true;
+                
+                //移除的字符
+                char d=s.charAt(left);
+                //左移窗口
+                left+=1;
+                //窗口进行一系列更新
+                if(need.containsKey(d)){
+                    if(window.get(d).equals(need.get(d)))
+                       valid-=1;
+                    window.put(d,window.get(d)-1);
+                }         
+            }
+            //得到一个窗口
+     }
+        return false;
+        
+        
+    }
+```
+
+
 
 ## 978.Longest Turbulent Subarray
 
