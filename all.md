@@ -185,9 +185,11 @@
   - [294.Find Median from Data Stream](#294find-median-from-data-stream)
   - [284.Peeking Iterator](#284peeking-iterator)
   - [<font color=red>297.Serialize and Deserialize Binary Tree</font>](#font-colorred297serialize-and-deserialize-binary-treefont)
+  - [380. Insert Delete GetRandom O(1)](#380-insert-delete-getrandom-o1)
   - [460.LFU cache](#460lfu-cache)
   - [705. Design HashSet](#705-design-hashset)
   - [706.Design HashMap](#706design-hashmap)
+  - [710.Random Pick with Blacklist](#710random-pick-with-blacklist)
 - [Topological Sort(拓扑排序)](#topological-sort拓扑排序)
   - [1203. Sort Items by Groups Respecting Dependencies](#1203-sort-items-by-groups-respecting-dependencies)
 - [Trie](#trie)
@@ -11074,6 +11076,67 @@ public:
     }
 ```
 
+## 380. Insert Delete GetRandom O(1)
+
+- `RandomizedSet()` Initializes the `RandomizedSet` object.
+- `bool insert(int val)` Inserts an item `val` into the set if not present. Returns `true` if the item was not present, `false` otherwise.
+- `bool remove(int val)` Removes an item `val` from the set if present. Returns `true` if the item was present, `false` otherwise.
+- `int getRandom()` Returns a random element from the current set of elements (it's guaranteed that at least one element exists when this method is called). Each element must have the **same probability** of being returned.
+
+增删，随机查都在常数时间内。
+
+
+
+思路1：用一个hashmap存val到index，用一个arrayList存index到val。
+
+==删除时需要考虑交换。==
+
+```java
+class RandomizedSet {
+
+    /** Initialize your data structure here. */
+    
+    List<Integer> l;
+    Map<Integer,Integer> m;
+    Random rand;
+    public RandomizedSet() {
+        l=new ArrayList<>();
+        m=new HashMap<>();
+        rand=new Random(25);
+    }
+    
+    /** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
+    public boolean insert(int val) {
+        if(m.containsKey(val)){
+            return false;
+        }
+        m.put(val,l.size());
+        l.add(val);
+        return true;
+    }
+    
+    /** Removes a value from the set. Returns true if the set contained the specified element. */
+    public boolean remove(int val) {
+        if(!m.containsKey(val)){
+            return false;
+        }
+        int i=m.get(val); //拿到索引i
+        m.put(l.get(l.size()-1),i); //将最后一个位置的索引改为 i
+        Collections.swap(l,i,l.size()-1); //交换得到正确位置，这时候删除最后一个元素即可
+        l.remove(l.size()-1); //删除最后一个元素
+        m.remove(val);
+        return true;
+    }
+    
+    /** Get a random element from the set. */
+    public int getRandom() {
+        return l.get(rand.nextInt(l.size()));
+    }
+}
+```
+
+
+
 ## 460.LFU cache
 
 LFU：插入新数据时，如果容量满了，删除最少频次使用的值。
@@ -11315,6 +11378,65 @@ public:
         m[key]=-1;
     }
 };
+```
+
+## 710.Random Pick with Blacklist
+
+给你输入一个正整数 `N`，代表左闭右开区间 `[0,N)`，再给你输入一个数组 `blacklist`，其中包含一些「黑名单数字」，且 `blacklist` 中的数字都是区间 `[0,N)` 中的数字。
+
+**Example 1:**
+
+```
+Input: 
+["Solution","pick","pick","pick"]
+[[1,[]],[],[],[]]
+Output: [null,0,0,0]
+```
+
+**Example 2:**
+
+```
+Input: 
+["Solution","pick","pick","pick"]
+[[2,[]],[],[],[]]
+Output: [null,1,1,1]
+```
+
+思路：通过映射把黑名单位置映射到合法位置（一一对应）。
+
+```java
+class Solution {
+
+    int sz;
+    Map<Integer,Integer> mapping;
+    Random rand;
+    public Solution(int n, int[] blacklist) {
+        mapping=new HashMap<>();
+        rand=new Random();
+        sz=n-blacklist.length;
+        for(int b:blacklist){
+            mapping.put(b,666);
+        }
+        int last=n-1;
+        for(int b:blacklist){
+            if(b>=sz)
+                continue;
+            while(mapping.containsKey(last)){
+                last--;
+            }
+            mapping.put(b,last);
+            last--;
+        }
+    }
+    
+    public int pick() {
+        int index=rand.nextInt(sz);
+        if(mapping.containsKey(index)) //命中黑名单
+            return mapping.get(index);
+        return index;
+    }
+}
+
 ```
 
 
