@@ -91,6 +91,7 @@
   - [895.Maximum Frequency Stack](#895maximum-frequency-stack)
   - [264.Ugly Number II](#264ugly-number-ii)
   - [295.Find Median from Data Stream](#295find-median-from-data-stream)
+  - [316.Remove Duplicate Letters](#316remove-duplicate-letters)
   - [347. Top K Frequent Elements](#347-top-k-frequent-elements)
   - [703.Kth Largest Element in a Stream](#703kth-largest-element-in-a-stream)
   - [767.Reorganize String](#767reorganize-string)
@@ -5541,6 +5542,62 @@ priority_queue<int> smallnums_q; // front 4,3,2,1
         
     }
 ```
+
+## 316.Remove Duplicate Letters
+
+给你一个仅包含小写字母的字符串，请你去除字符串中重复的字母，使得每个字母只出现一次。需保证返回结果的字典序最小(要求不能打乱其它字符的相对位置)
+
+**Example 1:**
+
+```
+Input: s = "bcabc"
+Output: "abc"
+```
+
+**Example 2:**
+
+```
+Input: s = "cbacdcbc"
+Output: "acdb"
+```
+
+思路：单调栈加数组统计以后位置是否还有该字母(确保字典序最小)
+
+```java
+public String removeDuplicateLetters(String s) {
+        Stack<Character> myStack=new Stack<>();   
+        
+        boolean[] inStack=new boolean[256];  //统计是否出现
+        int[] count=new int[256]; //统计当前以及该字符的情况 256：因为为字符 ASCILL码256够用了。
+        
+        for(int i=0;i<s.length();i++){
+            count[s.charAt(i)]++;
+        }
+        
+        for(char c:s.toCharArray()){
+            
+            count[c]--;
+            if(inStack[c]) continue;
+            
+            while(!myStack.isEmpty() && myStack.peek()>c){
+                if(count[myStack.peek()]==0)
+                    break;
+                
+                inStack[myStack.pop()]=false;
+            }
+            myStack.push(c);
+            inStack[c]=true;
+        }
+        
+        StringBuilder sb=new StringBuilder();
+        while(!myStack.isEmpty()){
+            sb.append(myStack.pop());
+        }
+        return sb.reverse().toString();
+    }
+```
+
+
 
 ## 347. Top K Frequent Elements
 
