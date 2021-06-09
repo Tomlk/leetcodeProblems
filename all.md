@@ -2,11 +2,13 @@
   - [1.Two Sum](#1two-sum)
   - [4.Median of Two Sorted Array](#4median-of-two-sorted-array)
   - [11.Container With Most Water](#11container-with-most-water)
+  - [27.Remove Element](#27remove-element)
   - [31.Next Permutation](#31next-permutation)
   - [41. First Missing Positive](#41-first-missing-positive)
   - [48. Rotate Image](#48-rotate-image)
   - [54. Spiral Matrix](#54-spiral-matrix)
   - [59.Spiral Matrix II](#59spiral-matrix-ii)
+  - [283.Move Zeroes](#283move-zeroes)
   - [410.Split Array Largest Sum](#410split-array-largest-sum)
 - [Hash Table](#hash-table)
   - [3. Longest Substring Without Repeating Characters](#3-longest-substring-without-repeating-characters)
@@ -21,6 +23,7 @@
   - [21.Merge Two Sorted Lists](#21merge-two-sorted-lists)
   - [24. Swap Nodes in Pairs](#24-swap-nodes-in-pairs)
   - [25. Reverse Nodes in k-Group](#25-reverse-nodes-in-k-group)
+  - [83. Remove Duplicates from Sorted List](#83-remove-duplicates-from-sorted-list)
   - [341.Flatten Nested List Iterator](#341flatten-nested-list-iterator)
 - [Math](#math)
   - [7.Reverse Integer](#7reverse-integer)
@@ -407,6 +410,50 @@ public:
 };
 ```
 
+
+
+## 27.Remove Element
+
+
+
+给你一个数组nums和一个值val，你需要原地移除所有数值等于val的元素，并返回移除后数组的新长度。
+
+不要使用额外的数组空间，你必须使用O(1)额外空间并原地修改输入数组。
+
+元素的顺序可以改变，你不要考虑数组中超出新长度后面的元素。
+
+**Example 2:**
+
+```
+Input: nums = [0,1,2,2,3,0,4,2], val = 2
+Output: 5, nums = [0,1,4,0,3]
+Explanation: Your function should return length = 5, with the first five elements of nums containing 0, 1, 3, 0, and 4. Note that the order of those five elements can be arbitrary. It doesn't matter what values are set beyond the returned length.
+```
+
+```java
+class Solution {
+    public int removeElement(int[] nums, int val) {
+        if(nums.length==0)
+            return 0;
+        int slow,fast;
+        slow=fast=0;
+        while(fast<nums.length){
+            if(nums[fast]!=val){
+                nums[slow]=nums[fast];
+                slow++;
+            }
+            fast++;
+        }
+        
+        return slow;
+    }
+}
+```
+
+
+
+
+
 ## 31.Next Permutation
 
 给定一个数组nums，实现方法nextPermutation将其转变为按其字典顺序的下一个更大的情况，如果是最大，则转变为最小
@@ -743,6 +790,43 @@ Output: [[1]]
 ```
 
 
+
+## 283.Move Zeroes
+
+把数组中所有0移到末尾并不改变其它元素的相对位置。
+
+**Example 1:**
+
+```
+Input: nums = [0,1,0,3,12]
+Output: [1,3,12,0,0]
+```
+
+**Example 2:**
+
+```
+Input: nums = [0]
+Output: [0]
+```
+
+思路：快慢指针
+
+```java
+class Solution {
+    public void moveZeroes(int[] nums) {
+        int slow=0,fast=0;
+        while(fast<nums.length){
+            if(nums[fast]!=0){
+                nums[slow]=nums[fast];
+                slow++;
+            }
+            fast++;
+        }
+        for(int i=slow;i<nums.length;i++)
+            nums[i]=0;
+    }
+}
+```
 
 
 
@@ -1740,6 +1824,41 @@ ListNode reverse(ListNode a, ListNode b) {
     }
 ```
 
+## 83. Remove Duplicates from Sorted List
+
+去除有序链表中重复的数
+
+**Example：**
+
+```
+Input: head = [1,1,2]
+Output: [1,2]
+```
+
+快慢指针：
+
+```java
+class Solution {
+    public ListNode deleteDuplicates(ListNode head) {
+        if(head==null)
+            return null;
+        ListNode slow,fast;
+        slow=fast=head;
+        while(fast!=null){
+            if(slow.val!=fast.val){
+                slow.next=fast;
+                slow=fast;
+            }
+            fast=fast.next;
+        }
+        slow.next=null;
+        return head;
+    }
+}
+```
+
+
+
 ## 341.Flatten Nested List Iterator
 
 扁平化嵌套列表迭代器
@@ -2305,34 +2424,24 @@ public:
 
 空间复杂度：O(1)
 
-思路：需要记录上次一不同的数，若相同则需要减少的数+1，不同则进行赋值，同时更新上一个数。
+思路：快慢指针
 
-最后抹去后面重复的数。
-
-```c++
-class Solution {
-public:
-    int removeDuplicates(vector<int>& nums) {
-        if(nums.size()==0)
+```java
+public int removeDuplicates(int[] nums) {
+        if(nums.length==0)
             return 0;
-        int lastnum=nums[0];
-        int n=1;
-        int deletenum=0;
-        for(int i=1;i<nums.size();i++)
-        {
-            if(nums[i]==lastnum)
-                deletenum+=1;
-            else{
-                n+=1;
-                nums[i-deletenum]=nums[i];
-                lastnum=nums[i-deletenum];
+        int slow,fast;
+        slow=fast=0;
+        while(fast<nums.length){
+            if(nums[fast]!=nums[slow]){
+                slow++;
+                nums[slow]=nums[fast];
             }
+            fast++;
         }
-        //resize nums
-        nums.resize(nums.size()-deletenum);
-        return n;
+        
+        return slow+1;
     }
-};
 ```
 
 ## 28 Implement strStr()
