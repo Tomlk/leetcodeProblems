@@ -291,6 +291,36 @@ public:
 };
 ```
 
+```java
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer,Integer> m=new HashMap<>();
+        for(int i:nums)
+            m.put(i,target-i);
+        int[] r=new int[2];
+        for(int i=0;i<nums.length;i++){
+            if(m.containsKey(m.get(nums[i]))){
+                int v=m.get(nums[i]);
+                r[0]=i;
+                for(int j=0;j<nums.length;j++)
+                    if(nums[j]==v)
+                    {
+                        r[1]=j;
+                        break;
+                    }
+                if(r[0]==r[1])
+                    continue;
+                break;
+            }
+        }
+        return r;
+        
+    }
+}
+```
+
+
+
 ## 4.Median of Two Sorted Array
 
 找出两个已排序数组 合并后的中位数
