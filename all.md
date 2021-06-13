@@ -72,6 +72,7 @@
   - [120、Triangle](#120triangle)
   - [121、Best Time to Buy and Sell Stock](#121best-time-to-buy-and-sell-stock)
   - [123、Best Time to Buy and Sell Stock III](#123best-time-to-buy-and-sell-stock-iii)
+  - [322.Coin Change](#322coin-change)
 - [Backtracking](#backtracking)
   - [17.Letter Combinations of a Phone Number](#17letter-combinations-of-a-phone-number)
   - [22.Generate Parentheses](#22generate-parentheses)
@@ -4453,6 +4454,56 @@ int maxProfit(vector<int>& prices) {
 		s4 = max(s4, s3+prices[i]);
 	}
 	return max(0,s4);
+}
+```
+
+
+
+## 322.Coin Change
+
+换零钱问题：给定一个零钱面值数组，给定一个数值amount。求组成数值amount需要最少多少张零钱，如果不行，则返回-1。
+
+**Example 1:**
+
+```
+Input: coins = [1,2,5], amount = 11
+Output: 3
+Explanation: 11 = 5 + 5 + 1
+```
+
+**Example 2:**
+
+```
+Input: coins = [2], amount = 3
+Output: -1
+```
+
+思路：动态规划
+
+```java
+class Solution {
+    public int coinChange(int[] coins, int amount) {
+        
+        if(amount==0)
+            return 0;
+         
+        int[] dp=new int[amount+1];
+        dp[0]=0;
+        for(int i=1;i<=amount;i++) dp[i]=amount+1;
+        
+        
+        for(int i=1;i<=amount;i++){
+            for(int j=0;j<coins.length;j++){
+                if(i-coins[j]>=0){
+                            dp[i]=Math.min(dp[i],dp[i-coins[j]]+1);
+                    }
+                        
+            }
+        }
+        
+        return (dp[amount]==amount+1)?-1:dp[amount];
+    }
+        
 }
 ```
 
