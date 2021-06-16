@@ -73,6 +73,8 @@
   - [121、Best Time to Buy and Sell Stock](#121best-time-to-buy-and-sell-stock)
   - [123、Best Time to Buy and Sell Stock III](#123best-time-to-buy-and-sell-stock-iii)
   - [322.Coin Change](#322coin-change)
+  - [494.Target Sum](#494target-sum)
+  - [931.Minimum Falling Path Sum](#931minimum-falling-path-sum)
 - [Backtracking](#backtracking)
   - [17.Letter Combinations of a Phone Number](#17letter-combinations-of-a-phone-number)
   - [22.Generate Parentheses](#22generate-parentheses)
@@ -4506,6 +4508,59 @@ class Solution {
         
 }
 ```
+
+## 494.Target Sum
+
+给定一个非负整数数组，a1,a2,...,an和一个目标数，S。现在你有两个符号+和-，对于数组中的任意一个数，你都可以从+或-中选择一个符号添加在前面。
+
+**Example 1:**
+
+```
+Input: nums = [1,1,1,1,1], target = 3
+Output: 5
+Explanation: There are 5 ways to assign symbols to make the sum of nums be target 3.
+-1 + 1 + 1 + 1 + 1 = 3
++1 - 1 + 1 + 1 + 1 = 3
++1 + 1 - 1 + 1 + 1 = 3
++1 + 1 + 1 - 1 + 1 = 3
++1 + 1 + 1 + 1 - 1 = 3
+```
+
+比较好的思路：dp
+
+```java
+class Solution {
+    
+    private int subsets(int[] nums,int sum){
+        int n=nums.length;
+        int[][] dp=new int[n+1][sum+1];
+        for(int i=0;i<=n;i++){
+            dp[i][0]=1;
+        }
+        
+        for(int i=1;i<=n;i++){
+            for(int j=0;j<=sum;j++){
+                if(j>=nums[i-1]){
+                    dp[i][j]=dp[i-1][j]+dp[i-1][j-nums[i-1]];
+                }else{
+                    dp[i][j]=dp[i-1][j];
+                }
+            }
+        }
+        return dp[n][sum];
+    }
+    public int findTargetSumWays(int[] nums, int target) {
+        int sum=0;
+        for(int n:nums) sum+=n;
+        if(sum<target || (sum+target)%2==1){
+            return 0;
+        }
+        return subsets(nums,(sum+target)/2);
+    }
+}
+```
+
+
 
 ## 931.Minimum Falling Path Sum
 
