@@ -73,8 +73,6 @@
   - [121、Best Time to Buy and Sell Stock](#121best-time-to-buy-and-sell-stock)
   - [123、Best Time to Buy and Sell Stock III](#123best-time-to-buy-and-sell-stock-iii)
   - [322.Coin Change](#322coin-change)
-  - [494.Target Sum](#494target-sum)
-  - [931.Minimum Falling Path Sum](#931minimum-falling-path-sum)
 - [Backtracking](#backtracking)
   - [17.Letter Combinations of a Phone Number](#17letter-combinations-of-a-phone-number)
   - [22.Generate Parentheses](#22generate-parentheses)
@@ -2942,6 +2940,8 @@ exection -> execution (insert 'u')
 
 思路：考虑动态规划
 
+ <img src="./imgs/72.png" alt="s" style="zoom:50%;" />
+
 ```c++
       int minDistance(string word1, string word2) {
         int m=word1.size();
@@ -2963,6 +2963,36 @@ exection -> execution (insert 'u')
         }
         return dp[m][n];
     }
+```
+
+```java
+class Solution {
+    
+    int min(int a,int b,int c){
+        return Math.min(Math.min(b,c),a);
+    }
+    public int minDistance(String s1, String s2) {
+        int m=s1.length(),n=s2.length();
+        int[][] dp=new int[m+1][n+1];
+        for(int i=1;i<=m;i++)
+            dp[i][0]=i;
+        for(int j=1;j<=n;j++)
+            dp[0][j]=j;
+        //自底向上求解
+        for(int i=1;i<=m;i++)
+            for(int j=1;j<=n;j++){
+                if(s1.charAt(i-1)==s2.charAt(j-1)){
+                    dp[i][j]=dp[i-1][j-1];
+                }else{
+                    dp[i][j]=min(dp[i-1][j]+1, //删除
+                                 dp[i][j-1]+1, //添加
+                                 dp[i-1][j-1]+1);//替换
+                }
+            }
+        return dp[m][n];
+                
+    }
+}
 ```
 
 
