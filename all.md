@@ -72,7 +72,10 @@
   - [120、Triangle](#120triangle)
   - [121、Best Time to Buy and Sell Stock](#121best-time-to-buy-and-sell-stock)
   - [123、Best Time to Buy and Sell Stock III](#123best-time-to-buy-and-sell-stock-iii)
+  - [300.Longest Increasing Subsequence](#300longest-increasing-subsequence)
   - [322.Coin Change](#322coin-change)
+  - [494.Target Sum](#494target-sum)
+  - [931.Minimum Falling Path Sum](#931minimum-falling-path-sum)
 - [Backtracking](#backtracking)
   - [17.Letter Combinations of a Phone Number](#17letter-combinations-of-a-phone-number)
   - [22.Generate Parentheses](#22generate-parentheses)
@@ -4487,6 +4490,82 @@ int maxProfit(vector<int>& prices) {
 	}
 	return max(0,s4);
 }
+```
+
+## 300.Longest Increasing Subsequence
+
+给定一个无序的整数数组，找到其中最长上升子序列的长度。
+
+**Example 1:**
+
+```
+Input: nums = [10,9,2,5,3,7,101,18]
+Output: 4
+Explanation: The longest increasing subsequence is [2,3,7,101], therefore the length is 4.
+```
+
+**Example 2:**
+
+```
+Input: nums = [0,1,0,3,2,3]
+Output: 4
+```
+
+思路：考虑子问题， 用dp。
+
+```java
+public int lengthOfLIS(int[] nums) {
+        int[] dp=new int[nums.length];
+        Arrays.fill(dp,1);
+        for(int i=1;i<dp.length;i++){
+            for(int j=i-1;j>=0;j--){
+                if(nums[j]<nums[i]){
+                    dp[i]=Math.max(dp[i],dp[j]+1);
+                }
+            }
+        }
+        
+        int r=0;
+        for(int item:dp){
+            r=Math.max(item,r);
+        }
+        return r;
+    }
+```
+
+思路2：二分查找解法
+
+```java
+public int lengthOfLIS(int[] nums) {
+        int[] top=new int[nums.length];
+        
+        //牌堆初始化为0
+        int piles=0;
+        for(int i=0;i<nums.length;i++){
+            
+            //要处理的扑克牌
+            int poker=nums[i];
+            
+            int left=0,right=piles;
+            while(left<right){
+                int mid=(left+right)/2;
+                if(top[mid]>poker){
+                    right=mid;
+                }else if(top[mid]<poker){
+                    left=mid+1;
+                }else{
+                    right=mid;
+                }
+            }
+            
+            //没找到合适的牌堆，新建一堆
+            if(left==piles) piles++;
+            //把这张牌放到牌堆顶
+            top[left]=poker;
+        }
+        //牌堆数就是LIS长度
+        return piles;
+    }
 ```
 
 
