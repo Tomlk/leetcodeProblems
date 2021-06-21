@@ -74,6 +74,7 @@
   - [123、Best Time to Buy and Sell Stock III](#123best-time-to-buy-and-sell-stock-iii)
   - [300.Longest Increasing Subsequence](#300longest-increasing-subsequence)
   - [322.Coin Change](#322coin-change)
+  - [354. Russian Doll Envelopes](#354-russian-doll-envelopes)
   - [494.Target Sum](#494target-sum)
   - [931.Minimum Falling Path Sum](#931minimum-falling-path-sum)
 - [Backtracking](#backtracking)
@@ -4617,6 +4618,69 @@ class Solution {
         
 }
 ```
+
+## 354. Russian Doll Envelopes
+
+给定许多信封，具有宽和长两个属性吗，信封嵌套问题，找出其中能被嵌套在一起的最多信封数目(信封A能够嵌套于信封B即 A.w>B.w 并且 A.l>B.l)
+
+**Example 1:**
+
+```
+Input: envelopes = [[5,4],[6,4],[6,7],[2,3]]
+Output: 3
+Explanation: The maximum number of envelopes you can Russian doll is 3 ([2,3] => [5,4] => [6,7]).
+```
+
+**Example 2:**
+
+```
+Input: envelopes = [[1,1],[1,1],[1,1]]
+Output: 1
+```
+
+```java
+class Solution {
+    
+    private int lengthOfLIS(int[] nums) {
+        int[] dp=new int[nums.length];
+        Arrays.fill(dp,1);
+        for(int i=1;i<dp.length;i++){
+            for(int j=i-1;j>=0;j--){
+                if(nums[j]<nums[i]){
+                    dp[i]=Math.max(dp[i],dp[j]+1);
+                }
+            }
+        }
+        
+        int r=0;
+        for(int item:dp){
+            r=Math.max(item,r);
+        }
+        return r;
+    }
+    public int maxEnvelopes(int[][] envelopes) {
+        int n=envelopes.length;
+        Arrays.sort(envelopes,new Comparator<int[]>(){
+            /*
+            这个解法的关键在于，对于宽度 w 相同的数对，要对其高度 h 进行降序排序。因为两个宽度相同的信封不能相互包含的，
+            */
+            @Override
+            public int compare(int[] a, int[] b) {
+                return a[0]==b[0]?b[1]-a[1]:a[0]-b[0];
+            }
+        });
+        
+        int[] height=new int[n];
+        for(int i=0;i<n;i++){
+            height[i]=envelopes[i][1];
+        }
+        
+        return lengthOfLIS(height);
+    }
+}
+```
+
+
 
 ## 494.Target Sum
 
