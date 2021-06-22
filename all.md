@@ -62,6 +62,7 @@
   - [241、Different Ways to Add Parentheses](#241different-ways-to-add-parentheses)
 - [Dynamic Programming](#dynamic-programming)
   - [32. Longest Valid Parentheses](#32-longest-valid-parentheses)
+  - [53. Maximum Subarray](#53-maximum-subarray)
   - [62.Unique Paths](#62unique-paths)
   - [63.Unique Paths II](#63unique-paths-ii)
   - [64.Minimum Path Sum](#64minimum-path-sum)
@@ -3998,6 +3999,45 @@ public:
        
     }
 };
+```
+
+## 53. Maximum Subarray
+
+**Example 1:**
+
+```
+Input: nums = [-2,1,-3,4,-1,2,1,-5,4]
+Output: 6
+Explanation: [4,-1,2,1] has the largest sum = 6.
+```
+
+**Example 2:**
+
+```
+Input: nums = [1]
+Output: 1
+```
+
+思路：简单动态规划，每个值只需考虑上一个即可。
+
+```java
+class Solution {
+    public int maxSubArray(int[] nums) {
+        int[] dp=new int[nums.length];
+        dp[0]=nums[0];
+        for(int i=1;i<dp.length;i++){
+            if(dp[i-1]>0)
+                dp[i]=dp[i-1]+nums[i];
+            else
+                dp[i]=nums[i];
+        }
+        int Max=dp[0];
+        for(int item:dp){
+            Max=Math.max(Max,item);
+        }
+        return Max;
+    }
+}
 ```
 
 ## 62.Unique Paths
