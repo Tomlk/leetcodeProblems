@@ -77,7 +77,10 @@
   - [322.Coin Change](#322coin-change)
   - [354. Russian Doll Envelopes](#354-russian-doll-envelopes)
   - [494.Target Sum](#494target-sum)
+  - [583. Delete Operation for Two Strings](#583-delete-operation-for-two-strings)
+  - [712.Minimum ASCII Delete Sum for Two Strings](#712minimum-ascii-delete-sum-for-two-strings)
   - [931.Minimum Falling Path Sum](#931minimum-falling-path-sum)
+  - [1143. Longest Common Subsequence（LCS）](#1143-longest-common-subsequencelcs)
 - [Backtracking](#backtracking)
   - [17.Letter Combinations of a Phone Number](#17letter-combinations-of-a-phone-number)
   - [22.Generate Parentheses](#22generate-parentheses)
@@ -4773,6 +4776,87 @@ class Solution {
 }
 ```
 
+## 583. Delete Operation for Two Strings
+
+给定两个字符串s1和s2，找到使得s1和s2相同所需的最小步数，每步可以删除任意一个字符串中的一个字符。
+
+**Example 1:**
+
+```
+Input: word1 = "sea", word2 = "eat"
+Output: 2
+Explanation: You need one step to make "sea" to "ea" and another step to make "eat" to "ea".
+```
+
+**Example 2:**
+
+```
+Input: word1 = "leetcode", word2 = "etco"
+Output: 4
+```
+
+题目核心仍是LCS，求出LCS长度，用s1.length+s2.length-2*LCS.length即可
+
+```java
+private int longestCommonSubstring(String s1,String s2){
+        int m=s1.length();
+        int n=s2.length();
+        int[][] dp=new int[m+1][n+1];
+        for(int i=1;i<=m;i++){
+            for(int j=1;j<=n;j++){
+                if(s1.charAt(i-1)==s2.charAt(j-1)){
+                    dp[i][j]=1+dp[i-1][j-1];
+                }else{
+                    dp[i][j]=Math.max(dp[i-1][j],dp[i][j-1]);
+                }
+            }
+        }
+        return dp[m][n];
+    }
+    public int minDistance(String word1, String word2) {
+        int lcsLength=longestCommonSubstring(word1,word2);
+        return -2*lcsLength+word1.length()+word2.length();
+    }
+```
+
+## 712.Minimum ASCII Delete Sum for Two Strings
+
+给定两个字符串s1，s2，找到使两个字符串相等所需删除的ASCII值的最小和。
+
+**Example 1:**
+
+```
+Input: s1 = "sea", s2 = "eat"
+Output: 231
+Explanation: Deleting "s" from "sea" adds the ASCII value of "s" (115) to the sum.
+Deleting "t" from "eat" adds 116 to the sum.
+At the end, both strings are equal, and 115 + 116 = 231 is the minimum sum possible to achieve this.
+```
+
+思路：定义逆向来看，dp[m] [n]，dp[i] [j]为将s1[0...i-1] 和 s2[0....j-1]删除为字符串相等所需要的ASCII值的最小和。
+
+```java
+public int minimumDeleteSum(String s1, String s2) {
+        int m=s1.length();
+        int n=s2.length();
+        int[][] dp=new int[m+1][n+1];
+        for(int i=1;i<=m;i++)
+            dp[i][0]=dp[i-1][0]+s1.charAt(i-1);
+        for(int j=1;j<=n;j++)
+            dp[0][j]=dp[0][j-1]+s2.charAt(j-1);
+        for(int i=1;i<=m;i++){
+            for(int j=1;j<=n;j++){
+                if(s1.charAt(i-1)==s2.charAt(j-1)){
+                    dp[i][j]=dp[i-1][j-1];
+                }else{
+                    dp[i][j]=Math.min(dp[i][j-1]+s2.charAt(j-1),dp[i-1][j]+s1.charAt(i-1));
+                }
+            }
+        }
+        return dp[m][n];
+    }
+```
+
 
 
 ## 931.Minimum Falling Path Sum
@@ -4819,6 +4903,52 @@ public int minFallingPathSum(int[][] matrix) {
     }
 ```
 
+## 1143. Longest Common Subsequence（LCS）
+
+对于输入的两个字符串s1和s2，找出他们两的最长公共子序列的长度。
+
+**Example 1:**
+
+```
+Input: text1 = "abcde", text2 = "ace" 
+Output: 3  
+Explanation: The longest common subsequence is "ace" and its length is 3.
+```
+
+**Example 2:**
+
+```
+Input: text1 = "abc", text2 = "abc"
+Output: 3
+Explanation: The longest common subsequence is "abc" and its length is 3.
+```
+
+思想：dp，构造二维数组dp[m] [n] 代表s1[0..m-1]与s2[0..n-1]的最大公共子序列长度。
+
+```java
+public int longestCommonSubsequence(String text1, String text2) {
+        int m=text1.length();
+        int n=text2.length();
+        int[][] dp=new int [m+1][n+1];
+        // 定义：text1[0..i-1] 和 text2[0..j-1] 的 lcs 长度为 dp[i][j]
+        // 目标：text1[0..m-1] 和 text2[0..n-1] 的 lcs 长度，即 dp[m][n]
+        // base case: dp[0][..] = dp[..][0] = 0
+        
+        for(int i=1;i<=m;i++){
+            for(int j=1;j<=n;j++){
+                if(text1.charAt(i-1)==text2.charAt(j-1)){ //相同字符
+                    dp[i][j]=1+dp[i-1][j-1];
+                }else{
+                    dp[i][j]=Math.max(dp[i][j-1],dp[i-1][j]);
+                }
+            }
+        }
+        return dp[m][n];
+    }
+```
+
+
+
 
 
 # Backtracking
@@ -4829,7 +4959,7 @@ public int minFallingPathSum(int[][] matrix) {
 
 给定从2到9的数字序列，返回所有可能的字符串集合。
 
-![](./imgs/17.png)
+ ![](./imgs/17.png)
 
 **Example 1:**
 
