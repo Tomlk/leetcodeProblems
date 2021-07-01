@@ -4949,6 +4949,8 @@ public int minFallingPathSum(int[][] matrix) {
     }
 ```
 
+
+
 ## 1143. Longest Common Subsequence（LCS）
 
 对于输入的两个字符串s1和s2，找出他们两的最长公共子序列的长度。
@@ -4995,7 +4997,78 @@ public int longestCommonSubsequence(String text1, String text2) {
 
 
 
+## Package Problem
 
+0-1背包问题
+
+```java
+int knapsack(int W, int N, vector<int>& wt, vector<int>& val) {
+    // vector 全填入 0，base case 已初始化
+    vector<vector<int>> dp(N + 1, vector<int>(W + 1, 0));
+    for (int i = 1; i <= N; i++) {
+        for (int w = 1; w <= W; w++) {
+            if (w - wt[i-1] < 0) {
+                // 当前背包容量装不下，只能选择不装入背包
+                dp[i][w] = dp[i - 1][w];
+            } else {
+                // 装入或者不装入背包，择优
+                dp[i][w] = max(dp[i - 1][w - wt[i-1]] + val[i-1], 
+                               dp[i - 1][w]);
+            }
+        }
+    }
+
+    return dp[N][W];
+}
+```
+
+### 416.Partition Equal Subset Sum
+
+给定一个数组，判断是否能够将其分为两个子数组，它们的和相等。
+
+**Example 1:**
+
+```
+Input: nums = [1,5,11,5]
+Output: true
+Explanation: The array can be partitioned as [1, 5, 5] and [11].
+```
+
+**Example 2:**
+
+```
+Input: nums = [1,2,3,5]
+Output: false
+Explanation: The array cannot be partitioned into equal sum subsets.
+```
+
+分析：题意就是能否在其找出子数组的和为1/2 *  全数组的和，即背包问题。
+
+```java
+public boolean canPartition(int[] nums) {
+        int sum=0;
+        for(int i=0;i<nums.length;i++)
+            sum+=nums[i];
+        int target=sum/2; //package problem
+        if(target*2!=sum)
+            return false;
+        else{
+            boolean[][] dp=new boolean[nums.length+1][target+1];
+            for(int i=0;i<=nums.length;i++)
+                dp[i][0]=true;
+            for(int i=1;i<=nums.length;i++){
+                for(int w=1;w<=target;w++){
+                    if(w-nums[i-1]<0){
+                        dp[i][w]=dp[i-1][w];
+                    }else{
+                        dp[i][w]=dp[i-1][w]||dp[i-1][w-nums[i-1]];
+                    }
+                }
+            }
+            return dp[nums.length][target];
+        }
+    }
+```
 
 # Backtracking
 
