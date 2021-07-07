@@ -6950,6 +6950,51 @@ bool isSubsequence(string s, string t) {
     }
 ```
 
+## 435.Non-overlapping Intervals
+
+给你很多形如 `[start, end]` 的闭区间，请你设计一个算法，**算出这些区间中需要至少移除的区间数量能使互不相交的区间最少**。
+
+**Example 1:**
+
+```
+Input: intervals = [[1,2],[2,3],[3,4],[1,3]]
+Output: 1
+Explanation: [1,3] can be removed and the rest of the intervals are non-overlapping.
+```
+
+**Example 2:**
+
+```
+Input: intervals = [[1,2],[1,2],[1,2]]
+Output: 2
+Explanation: You need to remove two [1,2] to make the rest of the intervals non-overlapping.
+```
+
+思路：贪心法：先按区间结束点从小到大排序，贪心算出最多能有多少个区间互不相交，然后总数减去即可。
+
+```java
+class Solution {
+    public int eraseOverlapIntervals(int[][] intervals) {
+        int n=intervals.length;
+        
+        Arrays.sort(intervals,(l1,l2)->{
+           return l1[1]-l2[1];
+        });
+        
+        int end=intervals[0][1];
+        int sum=1;
+        for(int i=1;i<n;i++){
+            if(intervals[i][0]>=end){
+                sum+=1;
+                end=intervals[i][1];
+            }
+        }
+        return n-sum;
+        
+    }
+}
+```
+
 
 
 # Sort
