@@ -82,6 +82,9 @@
   - [712.Minimum ASCII Delete Sum for Two Strings](#712minimum-ascii-delete-sum-for-two-strings)
   - [931.Minimum Falling Path Sum](#931minimum-falling-path-sum)
   - [1143. Longest Common Subsequence（LCS）](#1143-longest-common-subsequencelcs)
+  - [Package Problem](#package-problem)
+    - [416.Partition Equal Subset Sum](#416partition-equal-subset-sum)
+  - [518.Coin Change 2](#518coin-change-2)
 - [Backtracking](#backtracking)
   - [17.Letter Combinations of a Phone Number](#17letter-combinations-of-a-phone-number)
   - [22.Generate Parentheses](#22generate-parentheses)
@@ -115,6 +118,8 @@
   - [134. Gas Station](#134-gas-station)
   - [135. Candy](#135-candy)
   - [392.Is Subsequence](#392is-subsequence)
+  - [435.Non-overlapping Intervals](#435non-overlapping-intervals)
+  - [452.Minimum Number of Arrows to Burst Balloons](#452minimum-number-of-arrows-to-burst-balloons)
 - [Sort](#sort)
   - [56.Merge Intervals](#56merge-intervals)
   - [57.Insert Interval](#57insert-interval)
@@ -6995,7 +7000,36 @@ class Solution {
 }
 ```
 
+## 452.Minimum Number of Arrows to Burst Balloons
 
+打气球游戏，和上题类似。
+
+**Example 1:**
+
+```
+Input: points = [[10,16],[2,8],[1,6],[7,12]]
+Output: 2
+Explanation: One way is to shoot one arrow for example at x = 6 (bursting the balloons [2,8] and [1,6]) and another arrow at x = 11 (bursting the other two balloons).
+```
+
+```java
+public int findMinArrowShots(int[][] points) {
+        Arrays.sort(points,(point1,point2)->{
+           if(point1[1]>point2[1]) //the last case
+               return 1;
+           return point1[1]-point2[1];
+        });
+        int sum=1;
+        int end=points[0][1];
+        for(int i=1;i<points.length;i++){
+            if(points[i][0]>end){
+                sum+=1;
+                end=points[i][1];
+            }
+        }
+        return sum;
+    }
+```
 
 # Sort
 
