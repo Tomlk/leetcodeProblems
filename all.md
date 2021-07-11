@@ -6633,56 +6633,41 @@ Output: false
 Explanation: You will always arrive at index 3 no matter what. Its maximum jump length is 0, which makes it impossible to reach the last index.
 ```
 
-考虑1：直接用贪婪算法，但是最后一个用例会超时
+考虑1：贪心法
 
-```c++
-    bool findflag;
-    void Jump(int start,vector<int> & nums)
-    {
-        if(!findflag)
-        {
-            if(start==nums.size()-1||start+nums[start]>=nums.size()-1)
-            {
-                findflag=true;
-                return;
-            }
-
-            for(int i=start+nums[start];i>start;i--)
-            {
-                Jump(i,nums);
-            }
+```java
+   class Solution {
+    public boolean canJump(int[] nums) {
+        int farthest=0; //最远的距离
+        for(int i=0;i<nums.length-1;i++){
+            farthest=Math.max(farthest,nums[i]+i);
+            if(farthest<=i) //这里没有跳成功，证明前面也不能跳到i之后的位置，则永远也达不到之后的位置
+              return false; 
         }
+        return farthest>=nums.length-1;
     }
-    bool canJump(vector<int>& nums) {
-        
-        findflag=false;
-        Jump(0,nums);
-        return findflag;
-    }
+}
 ```
 
 因此考虑用dp方法
 
 ```c++
- bool canJump(vector<int>& nums) {
-         int n=nums.size();
-         vector<bool> dp(n,false);//if one can reach the position
-         dp[0]=true;//start position
-         for(int i=0;i<n;i++)
-         {
-             if(dp[i]) //this can be reach ,consider the follow position by it
-             {
-                 int j=min(i+nums[i],n-1);
-                 while(dp[j]==false)
-                 {
-                     dp[j]=true;
-                     j--;
-                 }
-             }
-         }
-         return dp[n-1];
-             
+class Solution {
+    public boolean canJump(int[] nums) {
+        boolean[] dp=new boolean[nums.length];
+        dp[0]=true;
+        for(int i=0;i<dp.length;i++){
+            if(dp[i]==true){
+                int j=Math.min(i+nums[i],dp.length-1);
+                while(dp[j]==false){
+                    dp[j]=true;
+                    j--;
+                }
+            }
+        }
+        return dp[nums.length-1];
     }
+}
 ```
 
 ## 45. Jump Game II
@@ -6691,28 +6676,65 @@ Explanation: You will always arrive at index 3 no matter what. Its maximum jump 
 
 从起始位置开始，判断能到达终点的最小跳跃次数(条件中暗示总能到达终点)
 
-```c++
- int jump(vector<int>& nums) {
-        int n=nums.size();
-        int step=0;
-        int start=0;
-        int end=0;//first step just one start position
-        while(end<n-1)
-        {
-            step+=1;
-            int maxend=end+1;
-            for(int i=start;i<=end;i++) //every possible position
-            {
-                if(i+nums[i]>=n-1) return step;//this step can reach the last position
-                maxend=max(maxend,i+nums[i]); //far position  this step can reach
-            }
-            //new step initialization
-            start=end+1;
-            end=maxend;
-        }
-        return step;
-    }
+**Example 1:**
+
 ```
+Input: nums = [2,3,1,1,4]
+Output: 2
+Explanation: The minimum number of jumps to reach the last index is 2. Jump 1 step from index 0 to 1, then 3 steps to the last index.
+```
+
+**Example 2:**
+
+```
+Input: nums = [2,3,0,1,4]
+Output: 2
+```
+
+动态规划思路：
+
+```c++
+class Solution {
+    public int jump(int[] nums) {
+        int[] dp=new int[nums.length];
+        for(int i=1;i<dp.length;i++){
+            dp[i]=(Integer.MAX_VALUE)/2;
+        }
+        dp[0]=0;
+        for(int i=0;i<dp.length;i++){
+            for(int j=i+1;j<dp.length&&j<=nums[i]+i;j++){
+                dp[j]=Math.min(dp[j],dp[i]+1);
+            }
+        }
+        return dp[dp.length-1];
+    }
+}
+```
+
+贪心思路：
+
+```java
+class Solution {
+    public int jump(int[] nums) {
+        int n=nums.length;
+        int end=0,farthest=0;
+        int jumps=0;
+        for(int i=0;i<n-1;i++){
+            /**
+            *选择选择范围更大的哪一个,比如3 1 4 2，从第0个位置应该跳在第2个位置应为跳到第2个位置后能选择3~6进行跳跃，而选择第3个位置下一步最多跳到5的位置。因此等于说位置2比位置3选择更多。
+            */
+            farthest=Math.max(nums[i]+i,farthest); 
+            if(end==i){
+                jumps++;
+                end=farthest;
+            }
+        }
+        return jumps;
+    }
+}
+```
+
+
 
 ## 122.  Best Time to Buy and Sell Stock II
 
