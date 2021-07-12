@@ -73,6 +73,7 @@
   - [120、Triangle](#120triangle)
   - [121、Best Time to Buy and Sell Stock](#121best-time-to-buy-and-sell-stock)
   - [123、Best Time to Buy and Sell Stock III](#123best-time-to-buy-and-sell-stock-iii)
+  - [174.Dungeon Game](#174dungeon-game)
   - [300.Longest Increasing Subsequence](#300longest-increasing-subsequence)
   - [322.Coin Change](#322coin-change)
   - [354. Russian Doll Envelopes](#354-russian-doll-envelopes)
@@ -4541,6 +4542,57 @@ int maxProfit(vector<int>& prices) {
 	return max(0,s4);
 }
 ```
+
+
+
+## 174.Dungeon Game
+
+输入一个存储着整数的二维数组 `grid`，如果 `grid[i][j] > 0`，说明这个格子装着血瓶，经过它可以增加对应的生命值；如果 `grid[i][j] == 0`，则这是一个空格子，经过它不会发生任何事情；如果 `grid[i][j] < 0`，说明这个格子有怪物，经过它会损失对应的生命值。
+
+现在你是一名骑士，将会出现在最上角，公主被困在最右下角，你只能向右和向下移动，请问你初始至少需要多少生命值才能成功救出公主？
+
+**Example 1:**
+
+ ![img](https://assets.leetcode.com/uploads/2021/03/13/dungeon-grid-1.jpg)
+
+```
+Input: dungeon = [[-2,-3,3],[-5,-10,1],[10,30,-5]]
+Output: 7
+Explanation: The initial health of the knight must be at least 7 if he follows the optimal path: RIGHT-> RIGHT -> DOWN -> DOWN.
+```
+
+**Example 2:**
+
+```
+Input: dungeon = [[0]]
+Output: 1
+```
+
+思路：因为要考虑到每一个位置骑士的声明值至少为1。所以适合逆向考虑问题。
+
+```java
+class Solution {
+    public int calculateMinimumHP(int[][] dungeon) {
+        int m=dungeon.length;
+        int n=dungeon[0].length;
+        int[][] dp=new int[m][n];
+        dp[m-1][n-1]=Math.max(1,-dungeon[m-1][n-1]+1);
+        for(int i=m-2;i>=0;i--)
+            dp[i][n-1]=Math.max(1,dp[i+1][n-1]-dungeon[i][n-1]);
+        for(int j=n-2;j>=0;j--)
+            dp[m-1][j]=Math.max(1,dp[m-1][j+1]-dungeon[m-1][j]);
+        
+        for(int i=m-2;i>=0;i--){
+            for(int j=n-2;j>=0;j--){
+                dp[i][j]=Math.max(1,Math.min(dp[i+1][j],dp[i][j+1])-dungeon[i][j]);
+            }
+        }
+        return dp[0][0];
+    }
+}
+```
+
+ 
 
 ## 300.Longest Increasing Subsequence
 
