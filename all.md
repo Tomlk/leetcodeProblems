@@ -78,6 +78,7 @@
   - [322.Coin Change](#322coin-change)
   - [354. Russian Doll Envelopes](#354-russian-doll-envelopes)
   - [494.Target Sum](#494target-sum)
+  - [514.Freedom Trail(自由之路)](#514freedom-trail自由之路)
   - [516.Longest Palindromic Subsequence](#516longest-palindromic-subsequence)
   - [583. Delete Operation for Two Strings](#583-delete-operation-for-two-strings)
   - [712.Minimum ASCII Delete Sum for Two Strings](#712minimum-ascii-delete-sum-for-two-strings)
@@ -4830,6 +4831,86 @@ class Solution {
             return 0;
         }
         return subsets(nums,(sum+target)/2);
+    }
+}
+```
+
+## 514.Freedom Trail(自由之路)
+
+给定一个字符串 ring，表示刻在外环上的编码；给定另一个字符串 key，表示需要拼写的关键词。您需要算出能够拼写关键词中所有字符的最少步数。
+
+最初，ring 的第一个字符与12:00方向对齐。您需要顺时针或逆时针旋转 ring 以使 key 的一个字符在 12:00 方向对齐，然后按下中心按钮，以此逐个拼写完 key 中的所有字符。
+
+旋转 ring 拼出 key 字符 key[i] 的阶段中：
+
+您可以将 ring 顺时针或逆时针旋转一个位置，计为1步。旋转的最终目的是将字符串 ring 的一个字符与 12:00 方向对齐，并且这个字符必须等于字符 key[i] 。
+如果字符 key[i] 已经对齐到12:00方向，您需要按下中心按钮进行拼写，这也将算作 1 步。按完之后，您可以开始拼写 key 的下一个字符（下一阶段）, 直至完成所有拼写。
+
+**Example 1:**
+
+```
+Input: ring = "godding", key = "gd"
+Output: 4
+Explanation:
+For the first key character 'g', since it is already in place, we just need 1 step to spell this character. 
+For the second key character 'd', we need to rotate the ring "godding" anticlockwise by two steps to make it become "ddinggo".
+Also, we need 1 more step for spelling.
+So the final output is 4.
+```
+
+**Example 2:**
+
+```
+Input: ring = "godding", key = "godding"
+Output: 13
+```
+
+思路：动态规划，定义dp[i] [j]表示表示当前中心位置在ring[i]、完成剩余的key[j....]需要多少次数。
+
+```java
+class Solution {
+    Map<Character,ArrayList<Integer>> charToIndex=new HashMap<>();
+    ArrayList<ArrayList<Integer>> memo=new ArrayList<>();
+    public int findRotateSteps(String ring, String key) {
+        int m=ring.length();
+        int n=key.length();
+        for(int i=0;i<m;i++){
+            ArrayList<Integer> temp=new ArrayList<>();
+            for(int j=0;j<n;j++){
+                temp.add(0);
+            }
+            memo.add(temp);
+        }
+        for(int i=0;i<ring.length();i++){
+            ArrayList<Integer> tempList=new ArrayList<>();
+            if(charToIndex.containsKey(ring.charAt(i))){
+               tempList=charToIndex.get(ring.charAt(i));
+            }
+                tempList.add(i);
+                charToIndex.put(ring.charAt(i),tempList);
+        }
+        return dp(ring,0,key,0);
+    }
+    
+    private int dp(String ring,int i,String key,int j){
+        if(j==key.length()){
+            return 0;
+        }
+        if(memo.get(i).get(j)!=0) return memo.get(i).get(j);
+        int n=ring.length();
+        int res=Integer.MAX_VALUE;
+        ArrayList<Integer> indexs= charToIndex.get(key.charAt(j));
+        
+        for(Integer k:indexs){
+            int delta=Math.abs(k-i);
+            delta=Math.min(delta,n-delta);
+            int subProblem=dp(ring,k,key,j+1);
+            res=Math.min(res,1+delta+subProblem);
+        }
+    
+        
+        memo.get(i).set(j,res);
+        return res;
     }
 }
 ```
