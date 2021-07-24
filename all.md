@@ -5041,6 +5041,57 @@ public int minimumDeleteSum(String s1, String s2) {
     }
 ```
 
+## 887.Super Egg Drop
+
+扔鸡蛋问题：给定你鸡蛋个数K和楼层数N，鸡蛋到达一定楼层高度阈值后扔鸡蛋就会破裂，鸡蛋没破可以重复扔，鸡蛋破了就不能扔了，你最多需要扔多少次，这样不管实际阈值在哪，你都能测出阈值？
+
+**Example 1:**
+
+```
+Input: k = 1, n = 2
+Output: 2
+//你有1个鸡蛋，楼层高度为2；
+你需要从1楼开始扔，1楼没破的话你还要在2楼扔，所以你最多需要扔两次。(不能一开始在2层扔，这样如果破了你就不知道阈值为1还是2)
+```
+
+**Example 2:**
+
+```
+Input: k = 2, n = 6
+Output: 3
+```
+
+思路:动态规划：设拥有k个鸡蛋，拥有测试次数m，然后在最倒霉情况下能测试出的楼层为dp[ k ] [m ]。
+
+==$dp[k][m]=dp[k][m-1]+dp[k-1][m-1]+1$​​==
+
+ <img src="/Users/longkun/Desktop/leetcodecodes/summary/problems/imgs/887.webp" style="zoom:33%;" />
+
+- $dp[k][m]$​ :当前能达到的楼层
+- $dp[k][m-1]$​​：在某个楼层鸡蛋扔了，但没摔碎，次数减一，鸡蛋个数不变，去此楼层楼上去测，即为楼上的所有楼层。
+- $dp[k-1][m-1]$：在某个楼层鸡蛋扔了，摔碎，次数减一，鸡蛋个数也减一，去此楼层楼下去测，即为楼下的所有楼层。
+- 1：代表此楼层。
+
+```java
+class Solution {
+    public int superEggDrop(int K, int N) {
+        int[][] dp = new int[K + 1][N + 1];
+        //dp[i][j] ：最多能测试楼层数
+        //i:当前鸡蛋个数；
+        //j：利用i个鸡蛋能扔的次数
+        int m = 0;
+        for(;dp[K][m]<N;){
+            m+=1;
+             for (int k = 1; k <= K; k++)
+                dp[k][m] = dp[k][m - 1] + dp[k - 1][m - 1] + 1;
+        }
+        return m;
+    }
+}
+```
+
+
+
 
 
 ## 931.Minimum Falling Path Sum
