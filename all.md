@@ -75,6 +75,7 @@
   - [123、Best Time to Buy and Sell Stock III](#123best-time-to-buy-and-sell-stock-iii)
   - [174.Dungeon Game](#174dungeon-game)
   - [300.Longest Increasing Subsequence](#300longest-increasing-subsequence)
+  - [312.Burst  Ballons](#312burst--ballons)
   - [322.Coin Change](#322coin-change)
   - [354. Russian Doll Envelopes](#354-russian-doll-envelopes)
   - [494.Target Sum](#494target-sum)
@@ -82,6 +83,8 @@
   - [516.Longest Palindromic Subsequence](#516longest-palindromic-subsequence)
   - [583. Delete Operation for Two Strings](#583-delete-operation-for-two-strings)
   - [712.Minimum ASCII Delete Sum for Two Strings](#712minimum-ascii-delete-sum-for-two-strings)
+  - [877.Stone Game](#877stone-game)
+  - [887.Super Egg Drop](#887super-egg-drop)
   - [931.Minimum Falling Path Sum](#931minimum-falling-path-sum)
   - [1143. Longest Common Subsequence（LCS）](#1143-longest-common-subsequencelcs)
   - [Package Problem](#package-problem)
@@ -5093,6 +5096,75 @@ public int minimumDeleteSum(String s1, String s2) {
         return dp[m][n];
     }
 ```
+
+## 877.Stone Game
+
+亚历克斯和李用几堆石子在做游戏。偶数堆石子排成一行，每堆都有正整数颗石子 piles[i] 。
+
+游戏以谁手中的石子最多来决出胜负。石子的总数是奇数，所以没有平局。
+
+亚历克斯和李轮流进行，亚历克斯先开始。 每回合，玩家从行的开始或结束处取走整堆石头。 这种情况一直持续到没有更多的石子堆为止，此时手中石子最多的玩家获胜。
+
+
+
+**偶数堆石子，先手必胜(因为石子的总数是奇数这样，先手方可以通过计算偶数位置和和奇数位置和来选择)**
+
+这里考虑奇数个石子的情况：使用动态规划。
+
+dp[i] [j].fir表示从第i个石头到第j个石头来选开始或者结束，先手方最大能获得石子数。
+
+dp[i] [j].sec 表示从第i个石头到第j个石头来选开始或结束，后手方最大能获得石子数。
+
+```java
+class Solution {
+    
+    class Pair{
+        public int fir;//先手方
+        public int sec;//后手方
+        Pair(int fir,int sec){
+            this.fir=fir;
+            this.sec=sec;
+        }
+    }
+    public boolean stoneGame(int[] piles) {
+        int n=piles.length;
+        Pair[][] dp=new Pair[n][n];
+        for(int i=0;i<n;i++){
+            for(int j=i;j<n;j++){
+                dp[i][j]=new Pair(0,0);
+            }
+        }
+        
+        for(int i=0;i<n;i++){
+            dp[i][i].fir=piles[i];
+            dp[i][i].sec=0;
+        }
+        
+        //斜着遍历数组
+        for(int l=2;l<=n;l++){
+            for(int i=0;i<=n-l;i++){
+                int j=l+i-1;
+                
+                int left=piles[i]+dp[i+1][j].sec;//选左边能获得的最大石子数
+                int right=piles[j]+dp[i][j-1].sec;//选右边能获得的最大石子数
+                
+                if(left>right){ //左边大
+                    dp[i][j].fir=left;//先手方会选左边
+                    dp[i][j].sec=dp[i+1][j].fir;//后手方变为dp[i+1][j]的先手方
+                }else{
+                    dp[i][j].fir=right;//先手方会选右边
+                    dp[i][j].sec=dp[i][j-1].fir;//后手方变为dp[i][j-1]的先手方
+                }
+            }
+        }
+        
+        Pair res=dp[0][n-1];
+        return res.fir-res.sec>0;
+    }
+}
+```
+
+
 
 ## 887.Super Egg Drop
 
