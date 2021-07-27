@@ -89,7 +89,14 @@
   - [1143. Longest Common Subsequence（LCS）](#1143-longest-common-subsequencelcs)
   - [Package Problem](#package-problem)
     - [416.Partition Equal Subset Sum](#416partition-equal-subset-sum)
-  - [518.Coin Change 2](#518coin-change-2)
+    - [518.Coin Change 2](#518coin-change-2)
+  - [Stock Problem](#stock-problem)
+    - [121.Best Time to Buy and Sell Stock](#121best-time-to-buy-and-sell-stock-1)
+    - [122. Best Time to Buy and Sell Stock II（无限次）](#122-best-time-to-buy-and-sell-stock-ii无限次)
+    - [123. Best Time to Buy and Sell Stock III(最多两次)](#123-best-time-to-buy-and-sell-stock-iii最多两次)
+    - [188. Best Time to Buy and Sell Stock IV (指定最多k次)](#188-best-time-to-buy-and-sell-stock-iv-指定最多k次)
+    - [309. Best Time to Buy and Sell Stock with Cooldown(无限次，但又冷冻期限制)](#309-best-time-to-buy-and-sell-stock-with-cooldown无限次但又冷冻期限制)
+    - [714. Best Time to Buy and Sell Stock with Transaction Fee(无限次，但每次买卖要手续费)](#714-best-time-to-buy-and-sell-stock-with-transaction-fee无限次但每次买卖要手续费)
 - [Backtracking](#backtracking)
   - [17.Letter Combinations of a Phone Number](#17letter-combinations-of-a-phone-number)
   - [22.Generate Parentheses](#22generate-parentheses)
@@ -5384,7 +5391,7 @@ public boolean canPartition(int[] nums) {
     }
 ```
 
-## 518.Coin Change 2
+### 518.Coin Change 2
 
 给定不同面额的硬币和一个总金额。写出函数来计算可以凑成总金额的硬币组合数。假设每一种面额的硬币有无限个。
 
@@ -5424,7 +5431,152 @@ class Solution {
 }
 ```
 
+## Stock Problem
 
+### 121.Best Time to Buy and Sell Stock
+
+即只能买卖一次
+
+```java
+class Solution {
+    public int maxProfit(int[] prices) {
+        int n=prices.length;
+        int dpSell=0;
+        int dpBuy=Integer.MIN_VALUE;
+        for(int i=0;i<n;i++){
+            dpSell=Math.max(dpSell,dpBuy+prices[i]);
+            dpBuy=Math.max(dpBuy,-prices[i]);
+        }
+        return dpSell;
+    }
+}
+```
+
+### 122. Best Time to Buy and Sell Stock II（无限次）
+
+```java
+class Solution {
+    public int maxProfit(int[] prices) {
+        int n=prices.length;
+        int dpSell=0;
+        int dpBuy=Integer.MIN_VALUE;
+        for(int i=0;i<n;i++){
+            int temp=dpSell;
+            dpSell=Math.max(dpSell,dpBuy+prices[i]);
+            dpBuy=Math.max(temp-prices[i],dpBuy);
+        }
+        
+        return dpSell;
+    }
+}
+```
+
+### 123. Best Time to Buy and Sell Stock III(最多两次)
+
+```java
+class Solution {
+    public int maxProfit(int[] prices) {
+        int maxK=2;
+        int n=prices.length;
+        int[][][] dp=new int[n][maxK+1][2];
+        
+        for(int i=0;i<n;i++){
+            for(int k=maxK;k>=1;k--){
+                if(i-1==-1){
+                    dp[i][k][0]=0;
+                    dp[i][k][1]=-prices[i];
+                    continue;
+                }
+                dp[i][k][0]=Math.max(dp[i-1][k][0],dp[i-1][k][1]+prices[i]);
+                dp[i][k][1]=Math.max(dp[i-1][k][1],dp[i-1][k-1][0]-prices[i]);
+            }
+        }
+        
+        return dp[n-1][maxK][0];
+    }
+}
+```
+
+
+
+### 188. Best Time to Buy and Sell Stock IV (指定最多k次)
+
+一般形式
+
+```java
+class Solution {  
+    public int maxProfitKInf(int[] prices) { //无限次
+        int n=prices.length;
+        int dpSell=0;
+        int dpBuy=Integer.MIN_VALUE;
+        for(int i=0;i<n;i++){
+            int temp=dpSell;
+            dpSell=Math.max(dpSell,dpBuy+prices[i]);
+            dpBuy=Math.max(temp-prices[i],dpBuy);
+        }
+        
+        return dpSell;
+    }
+    public int maxProfit(int maxK, int[] prices) {
+        int n=prices.length;
+        if(maxK>n/2) //即无限次
+            return maxProfitKInf(prices);
+        
+        int[][][] dp=new int[n][maxK+1][2];
+        for(int i=0;i<n;i++){
+            for(int k=maxK;k>=1;k--){
+                if(i-1==-1){
+                    dp[i][k][0]=0;
+                    dp[i][k][1]=-prices[i];
+                    continue;
+                }
+                dp[i][k][0]=Math.max(dp[i-1][k][0],dp[i-1][k][1]+prices[i]);
+                dp[i][k][1]=Math.max(dp[i-1][k][1],dp[i-1][k-1][0]-prices[i]);
+            }
+        }
+        return dp[n-1][maxK][0];
+    }
+}
+```
+
+### 309. Best Time to Buy and Sell Stock with Cooldown(无限次，但又冷冻期限制)
+
+```java
+class Solution {
+    public int maxProfit(int[] prices) {
+        int n=prices.length;
+        int dpSell=0;
+        int dpBuy=Integer.MIN_VALUE;
+        int dpPre=0;
+        for(int i=0;i<n;i++){
+            int temp=dpSell;
+            dpSell=Math.max(dpSell,dpBuy+prices[i]);
+            dpBuy=Math.max(dpBuy,dpPre-prices[i]);
+            dpPre=temp;
+        }
+        
+        return dpSell;
+    }
+}
+```
+
+### 714. Best Time to Buy and Sell Stock with Transaction Fee(无限次，但每次买卖要手续费)
+
+```java
+class Solution {
+    public int maxProfit(int[] prices, int fee) {
+        int n=prices.length;
+        int dpSell=0;
+        int dpBuy=Integer.MIN_VALUE;
+        for(int i=0;i<n;i++){
+            dpSell=Math.max(dpSell,dpBuy+prices[i]);
+            dpBuy=Math.max(dpBuy,dpSell-prices[i]-fee);
+        }
+        
+        return dpSell;
+    }
+}
+```
 
 # Backtracking
 
