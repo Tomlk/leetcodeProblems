@@ -5497,8 +5497,6 @@ class Solution {
 }
 ```
 
-
-
 ### 188. Best Time to Buy and Sell Stock IV (指定最多k次)
 
 一般形式
@@ -5574,6 +5572,82 @@ class Solution {
         }
         
         return dpSell;
+    }
+}
+```
+
+## House Robber问题
+
+### 198.House Robber问题1
+
+打家劫舍问题：对排成一队的房子进行打劫，每个房子有不同数目的金币，前提是不能打劫相邻位置的房子，你最多能打劫到多少金币？
+
+```java
+class Solution {
+    public int rob(int[] nums) {
+        int n=nums.length;
+        int[] dp=new int[n+2];
+        // 从第 i 间房子开始抢劫，最多能抢到的钱为 x
+        for(int i=n-1;i>=0;i--){
+            dp[i]=Math.max(dp[i+1],nums[i]+dp[i+2]);
+        }
+        return dp[0];
+    }
+}
+```
+
+
+
+### 213.House Robber问题2
+
+打家劫舍问题：对排成一个环的房子进行打劫，每个房子有不同数目的金币，前提是不能打劫相邻位置的房子，你最多能打劫到多少金币？
+
+```java
+class Solution {
+    
+    private int robRange(int[] nums,int start,int end){
+         int n = nums.length;
+        // dp[i] = x 表示：
+        // 从第 i 间房子开始抢劫，最多能抢到的钱为 x
+        // base case: dp[n] = 0
+        int[] dp = new int[nums.length + 2];
+        for (int i = end; i >= start; i--) {
+            dp[i] = Math.max(dp[i + 1], nums[i] + dp[i + 2]);
+        }
+        return dp[start];
+    }
+    public int rob(int[] nums) {
+        int n=nums.length;
+        if(n==1) return nums[0];
+        return Math.max(robRange(nums,0,n-2),robRange(nums,1,n-1));
+    }
+}
+```
+
+### 337. House Robber III
+
+打家劫舍问题，地图变成了二叉树。
+
+```java
+class Solution {
+    private Map<TreeNode,Integer> memo=new HashMap<>(); //记忆字典
+    public int rob(TreeNode root) {
+        if(root==null) return 0;
+        if(memo.containsKey(root))
+            return memo.get(root);
+        
+        // 抢，然后去下下家
+        int do_it = root.val
+            + (root.left == null ? 
+                0 : rob(root.left.left) + rob(root.left.right))
+            + (root.right == null ? 
+                0 : rob(root.right.left) + rob(root.right.right));
+            // 不抢，然后去下家
+        int not_do = rob(root.left) + rob(root.right);
+
+        int res = Math.max(do_it, not_do);
+        memo.put(root, res);
+        return res;
     }
 }
 ```
