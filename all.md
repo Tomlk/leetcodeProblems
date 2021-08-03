@@ -11825,6 +11825,97 @@ int findJudge(int N, vector<vector<int>>& trust) {
     }
 ```
 
+## 1743.Restore the Array From Adjacent Pairs
+
+题目：
+存在一个由 n 个不同元素组成的整数数组 nums ，但你已经记不清具体内容。好在你还记得 nums 中的每一对相邻元素。
+
+给你一个二维整数数组 adjacentPairs ，大小为 n - 1 ，其中每个 adjacentPairs[i] = [ui, vi] 表示元素 ui 和 vi 在 nums 中相邻。
+
+题目数据保证所有由元素 nums[i] 和 nums[i+1] 组成的相邻元素对都存在于 adjacentPairs 中，存在形式可能是 [nums[i], nums[i+1]] ，也可能是 [nums[i+1], nums[i]] 。这些相邻元素对可以 按任意顺序 出现。返回 原始数组 nums 。如果存在多种解答，返回 其中任意一个 即可。
+
+**Example 1:**
+
+```
+Input: adjacentPairs = [[2,1],[3,4],[3,2]]
+Output: [1,2,3,4]
+Explanation: This array has all its adjacent pairs in adjacentPairs.
+Notice that adjacentPairs[i] may not be in left-to-right order.
+```
+
+**Example 2:**
+
+```
+Input: adjacentPairs = [[4,-2],[1,4],[-3,1]]
+Output: [-2,4,1,-3]
+Explanation: There can be negative numbers.
+Another solution is [-3,1,4,-2], which would also be accepted.
+```
+
+思路：利用hashMap建立图
+
+```java
+class Solution {
+    public int[] restoreArray(int[][] adjacentPairs) {
+        int n=adjacentPairs.length;
+        Map<Integer, List<Integer>> graph = new HashMap<Integer, List<Integer>>();
+        Set<Integer> set = new HashSet<Integer>();
+        
+        int[] out = new int[n+1];
+    
+        for(int i= 0; i < adjacentPairs.length; i++){
+            
+             int[] pair = adjacentPairs[i];
+              
+			 addToGraph(graph, pair[0], pair[1]);
+             addToGraph(graph, pair[1], pair[0]);
+         }
+        
+         int start = 0;
+         for(int key : graph.keySet()){ //找到其中一个开始节点，（总共就两个）
+             if(graph.get(key).size()==1){
+                 start = key;
+                 break;
+            }
+         }
+        
+         LinkedList<Integer> queue = new LinkedList<Integer>();
+         queue.addLast(start);
+         set.add(start);   
+
+         int counter =0;
+
+         while(!queue.isEmpty()){
+
+             int restoredValue = queue.pollFirst();
+             List<Integer> neighbors = graph.get(restoredValue);
+             out[counter++] = restoredValue;
+
+             for(Integer curr : neighbors)
+             {
+                 if(!set.contains(curr)){ //为新元素
+                     set.add(curr);
+                     queue.addLast(curr);
+                 }
+             }
+         }
+
+        return out;
+    }
+	  private void addToGraph(Map<Integer, List<Integer>> graph, int key, int value) {
+		       if(graph.containsKey(key))
+                 graph.get(key).add(value);
+             else {
+                 List<Integer> temp = new ArrayList<Integer>();
+                 temp.add(value);
+                 graph.put(key, temp);
+             }  
+	  }
+}
+```
+
+
+
 
 
 # Design
