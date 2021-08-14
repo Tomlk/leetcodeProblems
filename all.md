@@ -368,61 +368,85 @@ Explanation: merged array = [1,2,3,4] and median is (2 + 3) / 2 = 2.5.
 
 解法：因为两个数组已排序，可以简单在O(n)时间复杂度来让两个数组进行合并，然后中位数就容易找到。
 
-```c++
+```java
 class Solution {
-public:
-    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
-        vector<int> nums; //merged array
-        int i,j;
-        i=j=0;
-        
-        //O(n) time
-        while(i<nums1.size()||j<nums2.size())
-        {
-            if(i>=nums1.size())
-            {
-                nums.push_back(nums2[j]);
-                j+=1;
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int index1 = 0;
+        int index2 = 0;
+        int med1 = 0;
+        int med2 = 0;
+        for (int i=0; i<=(nums1.length+nums2.length)/2; i++) {
+            med1 = med2;
+            if (index1 == nums1.length) {
+                med2 = nums2[index2];
+                index2++;
+                continue;
             }
-            else if(j>=nums2.size())
-            {
-                nums.push_back(nums1[i]);
-                i+=1;
+            if (index2 == nums2.length) {
+                med2 = nums1[index1];
+                index1++;
+                continue;
             }
-            else{
-                if(nums1[i]<nums2[j])
-                {
-                    nums.push_back(nums1[i]);
-                    i+=1;
-                }
-                else{
-                    nums.push_back(nums2[j]);
-                    j+=1;
-                }
+            if (nums1[index1] < nums2[index2] ) {
+                med2 = nums1[index1];
+                index1++;
+            }  else {
+                med2 = nums2[index2];
+                index2++;
             }
         }
-        //some special case
-        if(nums.size()==0)
-            return 0;
-        else if(nums.size()==1)
-            return nums[0];
-        else{
-            if(nums.size()%2==0)
-            {
-                
-                double one=nums[nums.size()/2];
-                double two=nums[nums.size()/2-1]; 
-                return  (one+two)/2;
-            }
-            else{
-                double one=nums[nums.size()/2];
-                return one;
-            }
+
+        // the median is the average of two numbers
+        if ((nums1.length+nums2.length)%2 == 0) {
+            return (float)(med1+med2)/2;
         }
-        return 0;
+
+        return med2;
     }
-};
+}
 ```
+
+O(log(min(m,n)))
+
+```java
+class Solution {
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        if(nums1.length>nums2.length){
+            return findMedianSortedArrays(nums2,nums1);
+        }
+        int x=nums1.length;
+        int y=nums2.length;
+        
+        int low=0;
+        int high=x;
+        while(low<=high){
+            int partionX=(low+high)/2;
+            int partionY=(x+y+1)/2-partionX;
+            
+            int maxLeftX=(partionX==0)?Integer.MIN_VALUE:nums1[partionX-1];
+            int minRightX=(partionX==x)?Integer.MAX_VALUE:nums1[partionX];
+            
+            int maxLeftY=(partionY==0)?Integer.MIN_VALUE:nums2[partionY-1];
+            int minRightY=(partionY==y)?Integer.MAX_VALUE:nums2[partionY];
+            
+            if(maxLeftX<=minRightY && maxLeftY<=minRightX){
+                if((x+y)%2==0){
+                    return ((double)Math.max(maxLeftX,maxLeftY)+Math.min(minRightX,minRightY))/2;
+                }else{
+                    return (double)Math.max(maxLeftX,maxLeftY);
+                }
+            }else if(maxLeftX>minRightY){
+                high=partionX-1;
+            }else{
+                low=partionX+1;
+            }
+        }
+        return -1;   
+    }
+}
+```
+
+
 
 ## 11.Container With Most Water
 
