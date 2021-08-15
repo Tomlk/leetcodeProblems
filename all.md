@@ -364,8 +364,6 @@ Output: 2.50000
 Explanation: merged array = [1,2,3,4] and median is (2 + 3) / 2 = 2.5.
 ```
 
-
-
 解法：因为两个数组已排序，可以简单在O(n)时间复杂度来让两个数组进行合并，然后中位数就容易找到。
 
 ```java
@@ -460,38 +458,23 @@ class Solution {
 
 因为面积要增大，所以宽度逐渐减小时，面积需要增大则必须高度增加，因此宽度减小后，选取的两栅栏的高度都必须大于当时最小的那个栅栏的高度才行，这样的思路，就能够在O(n)的时间复杂度解决该问题。
 
-```c++
+```java
 class Solution {
-public:
-    
-    int maxArea(vector<int>& height) {
-        
-        int i=0;
-        int j=height.size()-1;
-        
-        //start area
-        int currentArea=min(height[i],height[j])*(j-i);
-        while(i<j)
-        {
-
-            int temp=min(height[i],height[j]);//current height
-            //beause height decrease so height need become higher
-            while(height[i]<=temp&&i<height.size()-1)
-                    i+=1;
-            while(height[j]<=temp&&j>0)
-                    j-=1;
-
-            if(min(height[i],height[j])*(j-i)>currentArea)
-                    currentArea=min(height[i],height[j])*(j-i);
+    public int maxArea(int[] height) {
+        int l=0,r=height.length-1;
+        int Max=(r-l)*Math.min(height[l],height[r]);
+        while(l<r){
+            int h=Math.min(height[l],height[r]);
+            while(l<height.length && height[l]<=h) l++;
+            while(r>=0 && height[r]<=h) r--;
+            if(l<r){
+                Max=Math.max(Max,(r-l)*Math.min(height[l],height[r]));
+            }
         }
-        
-        return currentArea;
-        
+        return Max;
     }
-};
+}
 ```
-
-
 
 ## 27.Remove Element
 
@@ -511,29 +494,25 @@ Output: 5, nums = [0,1,4,0,3]
 Explanation: Your function should return length = 5, with the first five elements of nums containing 0, 1, 3, 0, and 4. Note that the order of those five elements can be arbitrary. It doesn't matter what values are set beyond the returned length.
 ```
 
+双指针：
+
 ```java
 class Solution {
     public int removeElement(int[] nums, int val) {
-        if(nums.length==0)
-            return 0;
-        int slow,fast;
-        slow=fast=0;
+        int fast,slow;
+        fast=slow=0;
+        while(fast<nums.length && nums[fast]==val) fast+=1;
         while(fast<nums.length){
-            if(nums[fast]!=val){
-                nums[slow]=nums[fast];
-                slow++;
-            }
-            fast++;
+            nums[slow]=nums[fast];
+            slow+=1;
+            fast+=1;
+            while(fast<nums.length && nums[fast]==val) fast+=1;
         }
         
         return slow;
     }
 }
 ```
-
-
-
-
 
 ## 31.Next Permutation
 
@@ -562,28 +541,31 @@ Output: [1,5,1]
 
 思路：关键找到下一个序列和前一个序列的关系：
 
-```c++
- void findnext(vector<int>& nums,int i)
-    {
-        reverse(nums.begin()+i+1,nums.end()); //2, 5 4 3 2 1-> 2 , 1 2 3 4 5  
-        for(int k=i+1;k<nums.size();k++)
-            if(nums[k]>nums[i])
-            {
-                swap(nums[i],nums[k]);   //2 , 1 2 3 4 5  ->3 , 1 2 2 45
-                return;
-            }
-    }
-    void nextPermutation(vector<int>& nums) {
-        for(int i=nums.size()-1;i>=1;i--)
-        {
-            if(nums[i]>nums[i-1])           //find next change example : 2, 5 4 3 2 1  :5>2
-            {
-                findnext(nums,i-1);
-                return;
-            }
+```java
+class Solution {
+    public void nextPermutation(int[] nums) {////2, 5 4 3 2 1
+        if(nums.length<=1){
+            return;
         }
-        reverse(nums.begin(),nums.end()); //5 4 3 2 2 1-> 1 2 2 3 4 5
+        int i=nums.length-2;
+        while(i>=0 && nums[i]>=nums[i+1]) i--;
+        if(i>=0){
+            int j=nums.length-1;
+            while(nums[j]<=nums[i]) j--; 
+            swap(nums,i,j);   //2, 5 4 3 2 1 -> 3, 5 4 2 2 1
+        }
+        reverse(nums,i+1,nums.length-1); //3, 5 4 2 2 1 -> 3, 1 2 2 4 5
     }
+    
+    private void swap(int[] nums,int i,int j){
+        nums[i]=nums[i]^nums[j];
+        nums[j]=nums[i]^nums[j];
+        nums[i]=nums[i]^nums[j];
+    }
+    private void reverse(int[] nums,int i,int j){
+        while(i<j) swap(nums,i++,j--);
+    }
+}
 ```
 
 ## 41. First Missing Positive
