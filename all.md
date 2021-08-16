@@ -610,23 +610,30 @@ Output: 1
 
 如何做到O(1)额外空间？
 
-```c++
- int firstMissingPositive(vector<int>& nums) {
-        nums.push_back(0);
-        int n=nums.size();
-        //erase useless numbers
-        for(int i=0;i<n;i++)
-            if(nums[i]<0 ||nums[i]>=n)
-                nums[i]=0;
-
-        for(int i=0;i<n;i++)
-            nums[nums[i]%n]+=n;
-        
-        for(int i=1;i<n;i++)
-            if(nums[i]/n==0)
-                return i;
-        return n;
+```java
+class Solution {
+    private void swap(int[] A,int a,int b){
+        A[a]=A[a]^A[b];
+        A[b]=A[a]^A[b];
+        A[a]=A[a]^A[b];
     }
+    public int firstMissingPositive(int[] A) {
+        int n=A.length;
+        int i=0;
+        while (i < n){
+            if (A[i] > 0 && A[i] <= n && A[A[i] - 1] != A[i])
+                swap(A,i,A[i]-1);
+            else
+                i++;
+        }
+        for(i = 0; i < n; ++ i){
+            if(A[i] != i + 1)
+                return i + 1;
+        }
+        
+        return n + 1;
+    }
+}
 ```
 
 ## 48. Rotate Image
