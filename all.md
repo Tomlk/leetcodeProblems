@@ -712,70 +712,66 @@ Output: [1,2,3,6,9,8,7,4,5]
 
 思路：记住转向顺序即可 向右->向下  ，向下->向左  ，向左->向上， 向上->向右
 
-```c++
-vector<int> spiralOrder(vector<vector<int>>& matrix) {
-        enum D{left,right,down,up};
-        D direc=right;
-        int m=matrix.size();
-        int n=matrix[0].size();
-        int total=m*n;
-        int i=0,j=0;
-        vector<int> rvec;
-        vector<vector<bool>> visited(m,vector<bool>(n,false));
-        while(rvec.size()<total)
-        {
-            if(direc==right)
-            {
-                while(j<n&&visited[i][j]==false)
-                {
-                    rvec.push_back(matrix[i][j]);
-                    visited[i][j]=true;
-                    j++;
+```java
+class Solution {
+    private enum direction{left,right,up,down};
+    public List<Integer> spiralOrder(int[][] matrix) {
+        int rows=matrix.length;
+        int cols=matrix[0].length;
+        int colStart=0;
+        int rowStart=0;
+        int curRow=0,curCol = 0;
+        curRow=0;
+        colStart=0;
+        int colLength=cols;
+        int rowLength=rows;
+        int num=0;
+        direction d=direction.right;
+        LinkedList<Integer> result = new LinkedList<>();
+        while(num<rows*cols){
+            if(d==direction.right){
+                for(int i=colStart;i<=colStart+colLength-1;i++){
+                    num+=1;
+                    result.add(matrix[curRow][i]);
                 }
-                j-=1;
-                i+=1;
-                direc=down;
-    
-            }
-            else if(direc==down)
-            {
-                while(i<m&&visited[i][j]==false)
-                {
-                    rvec.push_back(matrix[i][j]);
-                    visited[i][j]=true;
-                    i++;
+                curCol=colStart+colLength-1;
+                rowStart=curRow+1;
+                rowLength-=1;
+                d=direction.down;
+            }else if(d==direction.down){
+                for(int i=rowStart;i<=rowStart+rowLength-1;i++){
+                    num+=1;
+                    result.add(matrix[i][curCol]);
                 }
-                i-=1;
-                j-=1;
-                direc=left;
-            }
-            else if(direc==left)
-            {
-                while(j>=0&&visited[i][j]==false)
-                {
-                    rvec.push_back(matrix[i][j]);
-                    visited[i][j]=true;
-                    j--;
+                curRow=rowStart+rowLength-1;
+                colStart=curCol-1;
+                colLength-=1;
+                d=direction.left;
+            }else if(d==direction.left){
+                for(int i=colStart;i>=colStart-colLength+1;i--){
+                    num+=1;
+                    result.add(matrix[curRow][i]);
                 }
-                j+=1;
-                i-=1;
-                direc=up;
-            }
-            else if(direc==up)
-            {
-                while(i>=0&&visited[i][j]==false)
-                {
-                    rvec.push_back(matrix[i][j]);
-                    visited[i][j]=true;
-                    i--;
+                curCol=colStart-colLength+1;
+                rowStart=curRow-1;
+                rowLength-=1;
+                d=direction.up;
+            }else if(d==direction.up){
+                for(int i=rowStart;i>=rowStart-rowLength+1;i--){
+                    num+=1;
+                    result.add(matrix[i][curCol]);
                 }
-                i+=1;
-                j+=1;
-                direc=right;
+                curRow=rowStart-rowLength+1;
+                colStart=curCol+1;
+                colLength-=1;
+                d=direction.right;
             }
         }
-        return rvec;
+
+
+        return result;
     }
+}
 ```
 
 ## 59.Spiral Matrix II
