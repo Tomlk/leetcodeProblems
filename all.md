@@ -649,50 +649,51 @@ Input: matrix = [[1,2,3],[4,5,6],[7,8,9]]
 Output: [[7,4,1],[8,5,2],[9,6,3]]
 ```
 
-思路：从外到内依次旋转。
+思路：从外到内依次旋转：先考虑四个边缘点。
 
 ```c++
-void rotate(vector<vector<int>>& matrix) {
-        int n=matrix.size();
-        for(int i=n,start=0;i>=1;i-=2,start++)  //i ：the edge length,from outside to inside rotate
-        {
-            //up
-            vector<int> temp;
-            for(int j=start,k=start+i-1;k>=start;k--)
-                temp.push_back(matrix[j][k]);
-            
-            vector<int> pre;
-            
-            //left ->up
-            pre.clear();
-            for(int j=start,k=start;j<start+i;j++)
-                pre.push_back(matrix[j][k]);
-            for(int j=start,k=start+i-1,index=0;k>=start;k--,index++)
-                matrix[j][k]=pre[index];
-            
-            //down->left
-            pre.clear();
-            for(int j=start+i-1,k=start;k<start+i;k++)
-                pre.push_back(matrix[j][k]);
-            for(int j=start,k=start,index=0;j<start+i;j++,index++)
-                matrix[j][k]=pre[index];
-            
-            //right->down
-            pre.clear();
-            for(int j=start+i-1,k=start+i-1;j>=start;j--)
-                pre.push_back(matrix[j][k]);
-            
-            for(int j=start+i-1,k=start,index=0;k<start+i;k++,index++)
-                matrix[j][k]=pre[index];
-            
-            //up->right
-            pre.clear();
-            //use temp
-            for(int j=start+i-1,k=start+i-1,index=0;j>=start;j--,index++)
-                matrix[j][k]=temp[index];   
-            
+class Solution {
+    private void rotate(int[][] matrix,int start,int len){
+        if(len==1)
+            return;
+        // 4 point
+        int temp=matrix[start][start];
+        matrix[start][start]=matrix[start+len-1][start];
+        matrix[start+len-1][start]= matrix[start+len-1][start+len-1];
+        matrix[start+len-1][start+len-1]=matrix[start][start+len-1];
+        matrix[start][start+len-1]=temp;
+        
+        //4 edge
+        if(len>=3){
+            int[] old=new int[len-2];
+            int i=0;
+            for(int j=1;j<=len-2;j++){
+                old[i++]=matrix[start][start+j];
+                matrix[start][start+j]= matrix[start+len-1-j][start];
+            }
+
+            for(int j=1;j<=len-2;j++){
+                matrix[start+len-1-j][start]=matrix[start+len-1][start+len-1-j];
+            }
+
+            for(int j=1;j<=len-2;j++){
+                matrix[start+len-1][start+len-1-j]=matrix[start+j][start+len-1];
+            }
+
+            i=0;
+            for(int j=1;j<=len-2;j++){
+                matrix[start+j][start+len-1]=old[i++];
+            }
         }
     }
+    public void rotate(int[][] matrix) {
+        int n=matrix.length;
+        int i,len;
+        for( i=0,len=n;i<n/2 && len>=1;i++,len-=2){
+            rotate(matrix,i,len);
+        }
+    }
+}
 ```
 
 
@@ -794,65 +795,68 @@ Input: n = 1
 Output: [[1]]
 ```
 
-思路，利用一个visited矩阵，然后记录方向
+思路，类似54
 
-```c++
- vector<vector<int>> generateMatrix(int n) {
-        vector<vector<int> > matricx(n,vector<int>(n,0));
-        vector<vector<bool> > visited(n,vector<bool>(n,false));
-        enum direc{right,down,left,up};
-        direc d=right;
-        int t=1;
-        int i=0,j=0;
-        while(t<=n*n)
-        {
-            cout<<i<<","<<j<<":"<<t<<endl;
-            matricx[i][j]=t;
-            visited[i][j]=true;
-            t+=1;
-            if(d==right)
-            {
-                if(j+1<n and visited[i][j+1]==false)
-                    j=j+1;
-                else
-                {
-                    d=down;
-                    i=i+1;
+```java
+ class Solution {
+    private enum direction{left,right,up,down};
+    public int[][] generateMatrix(int n) {
+        int[][] matrix=new int[n][n];
+        int rows=n;
+        int cols=n;
+        int colStart=0;
+        int rowStart=0;
+        int curRow=0,curCol = 0;
+        curRow=0;
+        colStart=0;
+        int colLength=cols;
+        int rowLength=rows;
+        int num=0;
+        direction d=direction.right;
+        while(num<n*n){
+            if(d==direction.right){
+                for(int i=colStart;i<=colStart+colLength-1;i++){
+                    num+=1;
+                    matrix[curRow][i]=num;
                 }
-            }
-            else if(d==down)
-            {
-                if(i+1<n and visited[i+1][j]==false)
-                    i=i+1;
-                else
-                {
-                    d=left;
-                    j=j-1;
+                curCol=colStart+colLength-1;
+                rowStart=curRow+1;
+                rowLength-=1;
+                d=direction.down;
+            }else if(d==direction.down){
+                for(int i=rowStart;i<=rowStart+rowLength-1;i++){
+                    num+=1;
+                    matrix[i][curCol]=num;
                 }
-            }
-            else if(d==left)
-            {
-                if(j-1>=0 and visited[i][j-1]==false)
-                    j=j-1;
-                else
-                {
-                    i=i-1;
-                    d=up;
+                curRow=rowStart+rowLength-1;
+                colStart=curCol-1;
+                colLength-=1;
+                d=direction.left;
+            }else if(d==direction.left){
+                for(int i=colStart;i>=colStart-colLength+1;i--){
+                    num+=1;
+                    matrix[curRow][i]=num;
                 }
-            }
-            else if(d==up)
-            {
-                if(i-1>=0 and visited[i-1][j]==false)
-                    i=i-1;
-                else
-                {
-                    d=right;
-                    j=j+1;
+                curCol=colStart-colLength+1;
+                rowStart=curRow-1;
+                rowLength-=1;
+                d=direction.up;
+            }else if(d==direction.up){
+                for(int i=rowStart;i>=rowStart-rowLength+1;i--){
+                    num+=1;
+                    matrix[i][curCol]=num;
                 }
+                curRow=rowStart-rowLength+1;
+                colStart=curCol+1;
+                colLength-=1;
+                d=direction.right;
             }
         }
-        return matricx;
+
+
+        return matrix;
     }
+}
 ```
 
 
@@ -880,13 +884,14 @@ Output: [0]
 ```java
 class Solution {
     public void moveZeroes(int[] nums) {
-        int slow=0,fast=0;
+        int slow=0;
+        int fast=0;
         while(fast<nums.length){
             if(nums[fast]!=0){
-                nums[slow]=nums[fast];
-                slow++;
+                nums[slow++]=nums[fast++];
+            }else{
+                fast++;
             }
-            fast++;
         }
         for(int i=slow;i<nums.length;i++)
             nums[i]=0;
