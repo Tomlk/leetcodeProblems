@@ -1728,6 +1728,63 @@ ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
     }
 ```
 
+## 23.Merge k Sorted Lists
+
+合并K个有序链表，利用优先队列来减轻当前最小元素时间复杂度为O(logK)。
+
+整体为O(nLogk)
+
+```java
+class Solution {
+    private PriorityQueue<Pair<ListNode,Integer>> q=new PriorityQueue<>((pair1,pair2)->{
+        return pair1.getKey().val>pair2.getKey().val?1:-1;
+    });
+    private ListNode mergeKLists(ArrayList<ListNode> lists,boolean flag,int preIndex) {
+        if(lists.size()==0)
+            return null;
+        if(!flag){
+            for(int i=0;i<lists.size();i++){
+                if(lists.get(i)!=null)
+                    q.add(new Pair<>(lists.get(i),i));
+            }
+        }else{
+            if(preIndex!=-1)
+                q.add(new Pair<>(lists.get(preIndex),preIndex));
+        }
+        if(q.size()==0){
+            return null;
+        }
+        Pair<ListNode, Integer> pair = q.poll();
+        ListNode curNode = pair.getKey();
+        Integer index = pair.getValue();
+        if(curNode.next!=null){
+            lists.set(index,curNode.next);
+            curNode.next=mergeKLists(lists,true,index);
+        }else{
+            if(lists.size()>0){
+                lists.set(index,null);
+                curNode.next=mergeKLists(lists,true,-1);
+            }else{
+                curNode.next=null;
+            }
+        }
+        return curNode;
+    }
+    public ListNode mergeKLists(ListNode[] lists) {
+        ArrayList<ListNode> arrayList=new ArrayList<ListNode>();
+        for(int i=0;i<lists.length;i++){
+            arrayList.add(lists[i]);
+        }
+        if(arrayList.size()>0)
+            return mergeKLists(arrayList,false,-1);
+        else
+            return null;
+    }
+}
+```
+
+
+
 ## 24. Swap Nodes in Pairs
 
 给定一个链表，从第一个节点开始交换任意两个相邻的节点，返回这个链表。
