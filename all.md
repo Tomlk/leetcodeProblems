@@ -1025,21 +1025,33 @@ Notice that the answer must be a substring, "pwke" is a subsequence and not a su
     }
 ```
 
-更快捷的思路：
+更快捷的思路：滑动窗口
 
 ```c++
-int lengthOfLongestSubstring(string s) 
-	{
-		   vector<int> dict(256, -1);
-        int maxLen = 0, start = -1;
-        for (int i = 0; i != s.length(); i++) {
-            if (dict[s[i]] > start)
-                start = dict[s[i]];
-            dict[s[i]] = i;
-            maxLen = max(maxLen, i - start);
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        if(s.length()==0)
+            return 0;
+        int left=0;
+        int right=1;
+        int curMaxLength=1;
+        HashMap<Character,Integer> m=new HashMap<>();
+        m.put(s.charAt(0),0);
+        for(int i=1;i<s.length();i++){
+            char c=s.charAt(i);
+            right=i;
+            if(!m.containsKey(c)){
+                m.put(c,i);
+            }else{
+                left=Math.max(m.get(c)+1,left);
+                m.remove(c);
+                m.put(c,i);
+            }
+            curMaxLength=Math.max(curMaxLength,right-left+1);
         }
-        return maxLen;
-	}
+        return curMaxLength;
+    }
+}
 ```
 
 ## 18.4SUM
@@ -1062,84 +1074,43 @@ Output: [[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]]
 对于已排序数组 2SUM问题只需前后两个位置索引即可，因此该题可如下解决
 
 ```c++
- vector<vector<int>> fourSum(vector<int>& nums, int target) {
-        vector<vector<int>> output;
-        sort(nums.begin(),nums.end());//sort
-        int n=nums.size();
-        set<string> check;
-        
+class Solution {
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        Arrays.sort(nums);
+        int n=nums.length;
+       // Set<String> check=new HashSet<>();
+
+        Set<List<Integer>> result=new HashSet<>();
         for(int i=0;i<n-3;i++){
             for(int j=i+1;j<n-2;j++){
-                //O(n^2)
                 int low=j+1;
                 int high=n-1;
                 while(high>low){
-                    //O(n)
                     int current=nums[i]+nums[j]+nums[low]+nums[high];
                     if(current==target){
-                        string s=to_string(nums[i])+to_string(nums[j])+
-                        to_string(nums[low])+to_string(nums[high]);
-                        if(check.find(s)==check.end()){//igroe repeat sample
-                            check.insert(s);
-                            output.push_back({nums[i],nums[j],nums[low],nums[high]});
-                        }
-                        low++,high--;
-                    } else if(current>target){
-                        high--;
-                    } else {
-                        low++;
-                    } 
-                }
-            }
-        }
-                return output;
-    }
-```
-
-
-
-另一种利用hash 的方法，思想类似。
-
-```c++
- vector<vector<int>> fourSum(vector<int>& nums, int target) {
-        vector<vector<int>> result;
-        if (nums.size() == 0)
-            return result;
-        
-        //a map from value to 2 index
-        unordered_map<int, vector<pair<int, int>>> map;
-        for (int i = 0; i < nums.size(); ++i) {
-            for (int j = i + 1; j < nums.size(); ++j) {
-                map[target - nums[i] - nums[j]].push_back({i, j});
-            }
-        }
-        
-        for (int i = 0; i < nums.size(); ++i) {
-            for (int j = i + 1; j < nums.size(); ++j) {
-                int temp = nums[i] + nums[j];
-                //map[temp]=target-temp
-                if (map.find(temp) != map.end()) {
-                    for (auto p : map[temp]) {
-                        //ignore repeat
-                        if (p.first == i || p.first == j ||
-                            p.second == i || p.second == j)
-                            continue;                        
-                        result.push_back({nums[p.first], nums[p.second], nums[i], nums[j]});
-                        
+                        ArrayList<Integer> list= new ArrayList<>();
+                        list.add(nums[i]);
+                        list.add(nums[j]);
+                        list.add(nums[low]);
+                        list.add(nums[high]);
+                        result.add(list);
+                        low+=1;
+                        high-=1;
+                    }else if(current>target){
+                        high-=1;
+                    }else{
+                        low+=1;
                     }
                 }
             }
         }
-        
-        for (int i = 0; i < result.size(); ++i) {
-            sort(result[i].begin(), result[i].end());
-        }
-        sort(result.begin(), result.end());
-        result.erase(unique(result.begin(), result.end()), result.end());
-        
-        return result;
+        List<List<Integer>> l= new ArrayList<>(result);
+        return l;
     }
+}
 ```
+
+另一种利用hash 的方法，思想类似。
 
 ## 36.Valid Sudoku
 
