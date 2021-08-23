@@ -1195,30 +1195,31 @@ public:
 
 $O(n^2)$时间遍历，如果当前位置数不为空，为i，则标记当前行出现过i，当前列出现过i，当前网格出现过i，则以后的对应行不能出现i，以后的对应行不能出现i，以后的对应网格也不能出现i。
 
-```c++
-    int rows[9][9] = {0};
-    int cols[9][9] = {0};
-    int blocks[3][3][9] = {0};
-        
-    for(int r=0;r<9;r++)
-    {
-        for(int c=0;c<9;c++)
-        {
-            //not empty
-            if(board[r][c]!='.')
-            {
-                int num=board[r][c]-'1'; //index start from 0
-                if(rows[r][num]++ >0)
-                    return false;
-                if(cols[num][c]++>0)
-                    return false;
-                if(blocks[r/3][c/3][num]++>0)
-                    return false;
+```java
+class Solution {
+    private int[][] rows = new int[9][9];
+    private int[][] cols = new int[9][9];
+    private int[][][] blocks =new int[3][3][9];
+    public boolean isValidSudoku(char[][] board) {
+        for(int r=0;r<9;r++){
+            for(int c=0;c<9;c++){
+                if(board[r][c]!='.'){
+                    int num=board[r][c]-'1';
+                    if(rows[r][num]++ >0){
+                        return false;
+                    }
+                    if(cols[num][c]++>0){
+                        return false;
+                    }
+                    if(blocks[r/3][c/3][num]++>0){
+                        return false;
+                    }
+                }
             }
         }
+        return true;
     }
-    return true;       
-    }
+}
 ```
 
 ## 37.SudoKu Sovler
@@ -1310,35 +1311,43 @@ public:
 
 更简洁的解法
 
-```c++
-bool check(vector<vector<char>> &board, int i, int j, char val)
-{
-    int row = i - i%3, column = j - j%3;
-    for(int x=0; x<9; x++) if(board[x][j] == val) return false;
-    for(int y=0; y<9; y++) if(board[i][y] == val) return false;
-    for(int x=0; x<3; x++)
-    for(int y=0; y<3; y++)
-        if(board[row+x][column+y] == val) return false;
-    return true;
-}
-bool solveSudoku(vector<vector<char>> &board, int i, int j)
-{
-    if(i==9) return true;
-    if(j==9) return solveSudoku(board, i+1, 0);
-    if(board[i][j] != '.') return solveSudoku(board, i, j+1);
-
-    for(char c='1'; c<='9'; c++)
+```java
+class Solution {
+    
+    private boolean check(char[][] board, int i, int j, char val)
     {
-        if(check(board, i, j, c))
-        {
-            board[i][j] = c;
-            if(solveSudoku(board, i, j+1)) return true;
-            board[i][j] = '.';
-        }
+        int row = i - i%3, column = j - j%3;
+        for(int x=0; x<9; x++) if(board[x][j] == val) return false;
+        for(int y=0; y<9; y++) if(board[i][y] == val) return false;
+        for(int x=0; x<3; x++)
+        for(int y=0; y<3; y++)
+            if(board[row+x][column+y] == val) return false;
+        return true;
     }
-        
-    return false;
+    private boolean solveSudoku(char[][] board,int i,int j){
+        if(i==9){
+            return true;
+        }
+        if(j==9){
+            return solveSudoku(board,i+1,0);
+        }
+        if(board[i][j]!='.'){
+            return solveSudoku(board,i,j+1);
+        }
+        for(char c='1';c<='9';c++){
+            if(check(board, i, j, c)){
+                board[i][j] = c;
+                if(solveSudoku(board, i, j+1)) return true;
+                board[i][j] = '.'; //recall
+            }
+        }
+        return false;
+    }
+    public void solveSudoku(char[][] board) {
+        solveSudoku(board,0,0);
+    }
 }
+
 ```
 
 ## 49. Group Anagrams
@@ -1366,29 +1375,37 @@ Input: strs = ["a"]
 Output: [["a"]]
 ```
 
-思路：利用map建立字符数组到vector的映射
+思路：HashMap 建立ArrayList到List的映射
 
-```c++
- vector<vector<string>> groupAnagrams(vector<string>& strs) {
-        map<vector<int>,vector<string>> m; //c++ can't use unordered_map
-        for(auto item:strs)
-        {
-            vector<int> tempvec(26,0);
-            for(auto c:item)
-                tempvec[0+c-'a']+=1;
-            if(m.find(tempvec)==m.end())
-                m[tempvec]=vector<string> {item};
-            else 
-                m[tempvec].push_back(item);
+```java
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        Map<ArrayList<Integer>,List<String>> m=new HashMap<>();
+        for(int i=0;i<strs.length;i++){
+            String s=strs[i];
+            ArrayList<Integer> list=new ArrayList<>();
+            for(int j=0;j<26;j++){
+                list.add(0);
+            }
+            for(int j=0;j<s.length();j++){
+                int index=s.charAt(j)-'a';
+                int temp=list.get(index);
+                list.set(index,temp+1);
+            }
+            
+            if(!m.containsKey(list)){
+                m.put(list,new ArrayList<String>());
+            }
+            m.get(list).add(strs[i]);
         }
         
-        vector<vector<string>> result;
-        for(auto iter=m.begin();iter!=m.end();iter++)
-        {
-            result.push_back(iter->second);
+        List<List<String>> results=new ArrayList<>();
+        for(ArrayList<Integer> k:m.keySet()){
+            results.add(m.get(k));
         }
-        return result;
+        return results;
     }
+}
 ```
 
 ## 138.  Copy List with Random Pointer
