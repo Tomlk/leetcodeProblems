@@ -1423,72 +1423,54 @@ Input: head = [[7,null],[13,0],[11,4],[10,2],[1,0]]
 Output: [[7,null],[13,0],[11,4],[10,2],[1,0]]
 ```
 
-思路：用一个vector先按顺序存起来，然后再改random 指针
+思路：要存random的位置，需要遍历两次。
 
 ```c++
-Node* copyRandomList(Node* head) {
-        if(head==nullptr)
-            return nullptr;
-        
-        unordered_map<Node*,int> indexs; 
-        //get orginal index  
-        Node* temp=head;
+
+class Solution {
+    public Node copyRandomList(Node head) {
+        if(head==null)
+            return head;
+        List<Node> list=new ArrayList<>();
+        Node cur=head;
+        Map<Node,Integer> nodeIndex=new HashMap<>();
         int index=0;
-        while(temp!=nullptr)
-        {
-            indexs[temp]=index;
-            index++;
-            temp=temp->next;
-        }
-        
-        //get random index
-        temp=head;
-        unordered_map<Node*,int> randomindexs; 
-        while(temp!=nullptr)
-        {
-            if(temp->random!=nullptr)
-                randomindexs[temp]=indexs[temp->random];
-            else
-                randomindexs[temp]=-1; //random=nullptr
-            temp=temp->next;
+        while(cur!=null){
+            Node newNode=new Node(cur.val);
+            list.add(newNode);
+            nodeIndex.put(cur,index++);
+            cur=cur.next;
         }
         
         
-        temp=head;
-        vector<Node*> vec; //result 
-        vector<int> index2;  //random pointer index :vec[i]->random=vec[index2[i]]
-        while(temp!=nullptr) 
-        {
-            Node* nNode=new Node(temp->val);
-            nNode->next=nNode->random=nullptr;
-            
-            vec.push_back(nNode);
-            index2.push_back(randomindexs[temp]);
-            temp=temp->next;
+        List<Integer> randomIndex=new ArrayList<>();
+        cur=head;
+        while(cur!=null){
+            Node random=cur.random;
+            if(random!=null){
+                randomIndex.add(nodeIndex.get(random));
+            }else{
+                 randomIndex.add(-1);
+            }
+            cur=cur.next;
         }
         
-        //change next and random pointer
-        int n=vec.size();
-        for(int i=0;i<n-1;i++)
-        {
-            vec[i]->next=vec[i+1];
-            if(index2[i]!=-1)
-                vec[i]->random=vec[index2[i]];
-            else
-                vec[i]->random=nullptr;
+        for(int i=0;i<list.size();i++){
+            if(i!=list.size()-1){
+                list.get(i).next=list.get(i+1);
+            }
+            if(randomIndex.get(i)!=-1){
+                list.get(i).random=list.get(randomIndex.get(i));
+            }else{
+                list.get(i).random=null;
+            }
         }
-        //last one
-        vec[n-1]->next=nullptr;
-        if(index2[n-1]!=-1)
-            vec[n-1]->random=vec[index2[n-1]];
-            
-        return vec[0];
+        
+        return list.get(0);
+        
     }
+}
 ```
-
-
-
-
 
 # Linked List
 
@@ -1500,76 +1482,42 @@ example：
 
 ![](/Users/longkun/Desktop/leetcodecodes/summary/linked_list/2.png)
 
-直观思路，遍历，然后to_string连接成string ,reverse,然后 string+。
-
-最后返回：
-
-这样代码比较冗长，其实可以直接对链表进行：
-
-```C++
- ListNode *addTwoNumbers(ListNode *l1, ListNode *l2) {
-        ListNode* first=new ListNode(-1);
-        ListNode* head=first;
-        int C=0;
-        while(l1 ||l2 ||C!=0)
-        {
-            if(l1!=nullptr)
-            {
-                C+=l1->val;
-                l1=l1->next;
-            }
-            if(l2!=nullptr)
-            {
-                C+=l2->val;
-                l2=l2->next;
-            }
-            head->next=new ListNode(C%10);
-            C=C>=10?1:0;
-            head=head->next;
-        }
-        return first->next;
-}
-```
-
 ```java
-public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
-        ListNode head=new ListNode();
-        ListNode cur=head;
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode node=new ListNode(-1);
+        ListNode cur=node;
         int C=0;
-        while(l1!=null && l2!=null)
-        {
-            ListNode temp=new ListNode();
-            temp.val=(l1.val+l2.val+C)%10;
-            C=(l1.val+l2.val+C)/10;
-            cur.next=temp;
+        while(l1!=null && l2!=null){
+            int value=l1.val+l2.val+C;
+            ListNode newNode=new ListNode(value%10);
+            C=value/10;
+            cur.next=newNode;
             cur=cur.next;
             l1=l1.next;
             l2=l2.next;
         }
-        while(l1!=null)
-        {
-            ListNode temp=new ListNode();
-            temp.val=(l1.val+C)%10;
-            C=(l1.val+C)/10;
-            cur.next=temp;
+        while(l1!=null){
+            int value=l1.val+C;
+            ListNode newNode=new ListNode(value%10);
+            C=value/10;
+            cur.next=newNode;
             cur=cur.next;
             l1=l1.next;
         }
-        while(l2!=null)
-        {
-            ListNode temp=new ListNode();
-            temp.val=(l2.val+C)%10;
-            C=(l2.val+C)/10;
-            cur.next=temp;
+        while(l2!=null){
+            int value=l2.val+C;
+            ListNode newNode=new ListNode(value%10);
+            C=value/10;
+            cur.next=newNode;
             cur=cur.next;
             l2=l2.next;
         }
         if(C!=0)
             cur.next=new ListNode(C);
-        return head.next;
-            
-        
+        return node.next;
     }
+}
 ```
 
 
@@ -1584,36 +1532,34 @@ Example:
 
 ![](/Users/longkun/Desktop/leetcodecodes/summary/linked_list/19.png)
 
-一次遍历，即需要在一次遍历中记录list的位置，通过vector先存起来
+一次遍历，且O(1)时间复杂度。
 
-```c++
- ListNode* removeNthFromEnd(ListNode* head, int n) {
-        
-        ListNode* first=head;//save start node;
-        vector<ListNode*> vec;
-        //int i=1;//start from 1
-
-        while(head!=nullptr)
-        {
-            vec.push_back(head);
-            head=head->next;
+```java
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode fast=head;
+        ListNode slow=head;
+        int count=0;
+        while(count<n){
+            fast=fast.next;
+            count+=1;
         }
-        
-        int num_sum=vec.size();//node num
-        
-        //special situation
-        if(num_sum-n<=0)  //delete the first number
-        {
-            if(num_sum==1) //only one number,then empty
-                return nullptr;
-            if(num_sum>=2) //more than one number
-                return vec[1];
+        if(fast==null){
+            return head.next;
         }
-        //else  
-        vec[num_sum-n-1]->next=vec[num_sum-n]->next;
-        return first;
-        
+        fast=fast.next;
+        while(fast!=null){
+            slow=slow.next;
+            fast=fast.next;
+        }
+        if(slow.next.next==null){
+            slow.next=null;
+        }else{
+            slow.next=slow.next.next;
+        }
+        return head;
     }
+}
 ```
 
 ## 21.Merge Two Sorted Lists
@@ -1627,93 +1573,55 @@ Input: l1 = [1,2,4], l2 = [1,3,4]
 Output: [1,1,2,3,4,4]
 ```
 
-最简单的方法，重新建立一个长度为n1+n2的链表，O(n)，需要消耗额外空间。
+最简单的方法，递归。
 
-```C++
+```java
 class Solution {
-public:
-    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
-        ListNode* first=new ListNode(-1);
-        ListNode* head=first;
-        while(l1 and l2)
-        {
-            if(l1->val <l2->val)
-            {
-                head->next=new ListNode(l1->val);
-                l1=l1->next;
-                head=head->next;
-            }
-            else{
-                head->next=new ListNode(l2->val);
-                l2=l2->next;
-                head=head->next;
-            }   
-        }        
-        if(l1)
-            head->next=l1;
-        else
-            head->next=l2;
-        return first->next;
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        if(l1==null){
+            return l2;
+        }
+        if(l2==null){
+            return l1;
+        }
+        if(l1.val<l2.val){
+            ListNode newl1=l1.next;
+            l1.next=mergeTwoLists(newl1,l2);
+            return l1;
+        }else{
+            ListNode newl2=l2.next;
+            l2.next=mergeTwoLists(l1,newl2);
+            return l2;
+        }
     }
-};
+}
 ```
 
-是否有不需要消耗O(n)额外空间的方法？
+循环解决：
 
-```c++
-ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
-        
-        ListNode* cl1=l1;
-        ListNode* cl2=l2;
-        ListNode* cur;
-        ListNode* first=new ListNode(-1);
-       
-        //not empty
-        if(cl1 and cl2)
-        {
-            if(cl1->val<=cl2->val)
-            {
-                cur=cl1;
-                cl1=cl1->next;
+```java
+class Solution {
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        ListNode head=new ListNode(-1);
+        ListNode cur=head;
+        while(l1!=null && l2!=null){
+            if(l1.val<l2.val){
+                cur.next=l1;
+                l1=l1.next;
+            }else{
+                cur.next=l2;
+                l2=l2.next;
             }
-            else
-            {
-                cur=cl2;
-                cl2=cl2->next;
-            }
+            cur=cur.next;
         }
-        //at least one is empty
-        else{
-            if(cl1)
-                cur=cl1;
-            else cur=cl2;
-            first->next=cur;
-            return first->next;
+        if(l1!=null){
+            cur.next=l1;
+        }else{
+            cur.next=l2;
         }
-        
-        first->next=cur;
-        
-        //change pointer
-        while(cl1 and cl2)
-        {
-            if(cl1->val<=cl2->val)
-            {
-                cur->next=cl1;
-                cl1=cl1->next;
-            }
-            else{
-               cur->next=cl2;
-                cl2=cl2->next;
-            }
-            cur=cur->next;
-        }
-        if(cl1)
-            cur->next=cl1;
-        else if(cl2)
-            cur->next=cl2;
-
-        return first->next;
+        return head.next;
     }
+}
 ```
 
 ## 23.Merge k Sorted Lists
@@ -1770,8 +1678,6 @@ class Solution {
     }
 }
 ```
-
-
 
 ## 24. Swap Nodes in Pairs
 
