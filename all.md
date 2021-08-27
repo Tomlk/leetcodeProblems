@@ -1698,24 +1698,20 @@ Output: [2,1,4,3]
 
 思路2：直接改指针, 递归。
 
-```c++
- ListNode* TwoNodefirst(ListNode* node)
-    {
-        if(node==nullptr)    //
-            return nullptr;
-        else if(node->next==nullptr) //1 node 
-            return node;
-        else {  //2 or more nodes
-            ListNode* temp2=node->next;
-            ListNode* temp3=temp2->next;
-            node->next=TwoNodefirst(temp3);
-            temp2->next=node;
-            return temp2;
+```java
+class Solution {
+    public ListNode swapPairs(ListNode head) {
+        if(head==null ||head.next==null){
+            return head;
+        }else{
+            ListNode temp=head.next;
+            ListNode remainNodes=swapPairs(temp.next);
+            head.next=remainNodes;
+            temp.next=head;
+            return temp;
         }
     }
-    ListNode* swapPairs(ListNode* head) {
-        return TwoNodefirst(head);       
-    }
+}
 ```
 
 ## 25. Reverse Nodes in k-Group
@@ -1733,117 +1729,45 @@ Input: head = [1,2,3,4,5], k = 2
 Output: [2,1,4,3,5]
 ```
 
-思路1：用stack。
+思路：递归
 
-```c++
- ListNode* helper(ListNode* node, int k)
-    {
-        if(node==nullptr)
-            return nullptr;
-        else{
-            stack<ListNode*> s;
-            ListNode* knode=node;  
-            while(knode!=nullptr&&s.size()<k)
-            {
-                s.push(knode);
-                knode=knode->next;
-            } //knode ：now is the  next k's first（unchanged）。
-           
-            if(s.size()==k)       //can be reversed
-            {
-                ListNode* rnode=s.top();
-                s.pop();
-                ListNode* temp=rnode;
-                while(!s.empty())        //change next pointer
-                {
-                    temp->next=s.top();
-                    temp=temp->next;
-                    s.pop();
-                }
-                temp->next=helper(knode,k);        //recursion
-                return rnode;
+```java
+ class Solution {
+    
+    public ListNode reverseKGroup(ListNode head, int k) {
+        ListNode start=head;
+        ListNode cur=start;
+        boolean flag=true;
+        for(int i=0;i<k;i++){
+            if(cur!=null){
+                cur=cur.next;
+            }else{
+                flag=false;
+                break;
             }
-            else{          //can't be reversed return the original node
-                return node;
+        }
+        
+        if(!flag){
+            return head;
+        }else{
+            ListNode nextNode=cur;
+            ListNode reaminsNode=reverseKGroup(nextNode,k);
+            
+            ListNode pre=start;
+            cur=start.next;
+            for(int i=1;i<k;i++){
+                ListNode next=cur.next;
+                cur.next=pre;
+                pre=cur;
+                cur=next;
             }
+            head.next=reaminsNode;
+            return pre;
             
         }
-    }
-    ListNode* reverseKGroup(ListNode* head, int k) {
-        return helper(head,k);
-    }
-```
-
-思路2 ：O(1)空间复杂度
-
-```java
-private ListNode successor=null;
-    
-    private int K;
-    
-    public ListNode helper(ListNode head, int k) {
         
-        if(k==K) //检查是否需要反转
-        {   
-            int i=0;
-            ListNode temp=head;
-            while(temp!=null && i<k)
-            {
-                temp=temp.next;
-                i+=1;
-            }
-            if(i<k)
-                return head;
-        } 
-        if(k==1) //找到这一轮最后节点的下一个节点，记录这一轮的后驱节点 
-        {
-            successor=helper(head.next,K);//记录这一轮的后驱为下一轮的开始
-            return head;//返回这一轮的头节点(原顺序的最后一个)
-        }
-        ListNode last=helper(head.next,k-1); //递归下去
-        
-        head.next.next=head; //反转指向
-        head.next=successor; //指向下一轮
-        return last;
     }
-    
-    public ListNode reverseKGroup(ListNode head, int k) {
-        K=k;
-        return helper(head,k);
-    }
-```
-
-```java
-ListNode reverse(ListNode a, ListNode b) {
-    ListNode pre, cur, nxt;
-    pre = null; cur = a; nxt = a;
-    // while 终止的条件改一下就行了
-    while (cur != b) {
-        nxt = cur.next;
-        cur.next = pre;
-        pre = cur;
-        cur = nxt;
-    }
-    // 返回反转后的头结点
-    return pre;
 }
-    
-    public ListNode reverseKGroup(ListNode head, int k) {
-       if (head == null) return null;
-        // 区间 [a, b) 包含 k 个待反转元素
-        ListNode a, b;
-        a = b = head;
-        for (int i = 0; i < k; i++) {
-            // 不足 k 个，不需要反转，base case
-            if (b == null) return head;
-            b = b.next;
-        }
-        // 反转前 k 个元素
-        ListNode newHead = reverse(a, b);
-        // 递归反转后续链表并连接起来
-        a.next = reverseKGroup(b, k);
-        return newHead;
-    }
 ```
 
 ## 83. Remove Duplicates from Sorted List
@@ -1906,65 +1830,41 @@ Output: [1,1,2,1,1]
 Explanation: By calling next repeatedly until hasNext returns false, the order of elements returned by next should be: [1,1,2,1,1].
 ```
 
-解法：递归
+解法：低估
 
 ```java
-private LinkedList<Integer> list;
-    //recursion get a list
-    private void dfs(List<NestedInteger> nestedList){
-        for(NestedInteger ni:nestedList){
-            if(ni.isInteger()){
-                list.addLast(ni.getInteger());
-            }
-            else{
-                dfs(ni.getList());
-            }
-        }
-    }
-    public NestedIterator(List<NestedInteger> nestedList) {
-        list=new LinkedList<>();
-        dfs(nestedList);
-    }
+public class NestedIterator implements Iterator<Integer> {
 
-    @Override
-    public Integer next() {
-        if(hasNext()){
-            return list.pollFirst();
-        }
-       return -1;
-    }
-
-    @Override
-    public boolean hasNext() {
-        return list.size()>0;
-    }
-```
-
-优化内存空间：
-
-```java
-private LinkedList<NestedInteger> list;
+    private List<Integer> resultList;
     
+    private int index;
+    
+    private void dfs(List<NestedInteger> nestedList){
+        for(NestedInteger nestedInteger:nestedList){
+            if(nestedInteger.isInteger()){
+                resultList.add(nestedInteger.getInteger());
+            }else{
+                List<NestedInteger> list=nestedInteger.getList();
+                dfs(list);
+            }
+        }
+    }
     public NestedIterator(List<NestedInteger> nestedList) {
-        list=new LinkedList<NestedInteger>(nestedList);
+        resultList=new ArrayList<>();
+        dfs(nestedList);
+        index=0;
     }
 
     @Override
     public Integer next() {
-        return list.pollFirst().getInteger();
+        return resultList.get(index++);
     }
 
     @Override
     public boolean hasNext() {
-        while(!list.isEmpty() && !list.peekFirst().isInteger()){
-            List<NestedInteger> first=list.pollFirst().getList();
-            for(int i=first.size()-1;i>=0;i--){
-                list.addFirst(first.get(i));
-            }
-        }
-        return !list.isEmpty();
-        
+        return index<resultList.size();
     }
+}
 ```
 
 
@@ -2005,37 +1905,27 @@ Output: 0
 
 思考：
 
-直接to_string后反转再判断并进行返回。
+取模
 
-```c++
+```java
 class Solution {
-public:
-    //int change to long
-    int reverse(long x) {
-        //whether or not positive
-        int positive=1;
-        if(x<0)
-            positive=-1;
-        
-        x=x>0?x:-x;
-        
-        string sx=to_string(x);
-        
-        ::reverse(sx.begin(),sx.end());
-        
-        long temp;
-        try{
-            //stoi will check the the result
-         temp=positive*stoi(sx);
+    public int reverse(int x) {
+        boolean flag=true;
+        if(x<0){
+            flag=false;
+            x=Math.abs(x);
         }
-        catch(exception e){
+        long result=0;
+        while(x>0){
+            result=result*10+x%10;
+            x=x/10;
+        }
+        if(result>Integer.MAX_VALUE || result<Integer.MIN_VALUE){
             return 0;
         }
-        // if(temp>pow(2,31)-1 or temp<-pow(2,31))
-        //     return 0;
-        return temp;
+        return flag==true?(int)result:-(int)result;
     }
-};
+}
 ```
 
 ## 9.Palindrome Number
