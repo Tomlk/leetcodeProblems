@@ -1944,59 +1944,27 @@ Output: true
 ```
 Input: x = -121
 Output: false
-Explanation: From left to right, it reads -121. From right to left, it becomes 121-. Therefore it is not a palindrome.
+Explanation: From left to right, it reads -121. From right to left, it becomes 121-. Therefore it is not a palindrome
 ```
 
-简单方式1：利用string
+延伸：取模反转后判断是否相等。
 
-```c++
-class Solution {
-public:
-    bool isPalindrome(int x) {
-        //negative number 
-        if(x<0)
+```java
+ class Solution {
+    public boolean isPalindrome(int x) {
+        if(x<0 || (x!=0 && x%10==0)){
             return false;
-        string s=to_string(x);
-        int l=s.size();
-        for(int i=0;i<l/2;i++)
-        {
-            if(s[i]!=s[l-i-1])
-                return false;
+        }else{
+            int oldX=x;
+            int sum=0;
+            while(x>0){
+                sum=sum*10+x%10;
+                x=x/10;
+            }
+            return sum==oldX;
         }
-        return true;
     }
-};
-```
-
-延伸：不利用string，如何实现？->利用vector存储每一位
-
-```c++
- bool isPalindrome(int x) {
-        //x<0
-         if(x<0)
-            return false;
-         //==0
-         if(x==0)
-             return true;
-         
-         //save each bit to a vector
-         vector<int> numbervec;
-         int temp;
-         while(x>0)
-         {
-             temp=x%10;
-             numbervec.push_back(temp);
-             x/=10;
-         }
-         //compare
-         int l=numbervec.size();
-         for(int i=0;i<l/2;i++)
-         {
-             if(numbervec[i]!=numbervec[l-i-1])
-                 return false;
-         }
-         return true;
-    }
+}
 ```
 
 ## 12.Integer to Roman
@@ -2016,61 +1984,85 @@ D             500
 M             1000
 ```
 
-其中值得注意的是4* 和 9*需要向前添上一个等级的字符。
-
-比如4：IV  ，9：IX
+思路：从大到小考虑。
 
 ```c++
 class Solution {
-public:
-    string intToRoman(int num) {
-        
-        string s=to_string(num);
-        int l=s.size();
-        
-        unordered_map<int,string> m1;
-        unordered_map<int,string> m5;
-        m1[1]="I";
-        m5[1]="V";
-        m1[2]="X";
-        m5[2]="L";
-        m1[3]="C";
-        m5[3]="D";
-        m1[4]="M";
-        
-        int bitindex=1;
-        
-        string results;
-        for(int i=l-1;i>=0;i--)
-        {
-            if(s[i]<='3' and s[i]>='0')
-            {
-                for(int k=0;k<s[i]-'0';k++)
-                 results.insert(0,m1[bitindex]);
+    public String intToRoman(int num) {
+        String result="";
+        if(num/1000!=0){
+            int index=num/1000;
+            for(int i=0;i<index;i++){
+                result+="M";
             }
-            else if(s[i]=='4')
-            {
-                results.insert(0,m5[bitindex]);
-                results.insert(0,m1[bitindex]);
-                
-            }
-            else if(s[i]>='5' and s[i]<='8')
-            {
-                for(int k=0;k<s[i]-'5';k++)
-                    results.insert(0,m1[bitindex]);
-                results.insert(0,m5[bitindex]);
-            }
-            else if(s[i]=='9')
-            {
-                results.insert(0,m1[bitindex+1]);
-                results.insert(0,m1[bitindex]);
-            }
-            bitindex+=1;
-            
+            num=num%1000;
         }
-        return results;
+        if(num/100!=0){
+            int index=num/100;
+            if(index==5){
+                result+="D";
+            }else if(index<=3){
+                for(int i=0;i<index;i++){
+                    result+="C";
+                }
+            }else if(index==4){
+                 result+="CD";
+            }
+            else if(index==9){
+                 result+="CM";
+            }else if(index<=8){
+                result+="D";
+                for(int i=5;i<index;i++){
+                     result+="C";
+                }
+            }
+            num=num%100;
+        }
+        if(num/10!=0){
+            int index=num/10;
+            if(index==5){
+                result+="L";
+            }else if(index<=3){
+                for(int i=0;i<index;i++){
+                    result+="X";
+                }
+            }else if(index==4){
+                 result+="XL";
+            }
+            else if(index==9){
+                 result+="XC";
+            }else if(index<=8){
+                result+="L";
+                for(int i=5;i<index;i++){
+                     result+="X";
+                }
+            }
+            num=num%10;
+        }
+        if(num!=0){
+            int index=num;
+            if(index==5){
+                result+="V";
+            }else if(index<=3){
+                for(int i=0;i<index;i++){
+                    result+="I";
+                }
+            }else if(index==4){
+                 result+="IV";
+            }
+            else if(index==9){
+                 result+="IX";
+            }else if(index<=8){
+                result+="V";
+                for(int i=5;i<index;i++){
+                     result+="I";
+                }
+            }
+            num=num%10;
+        }
+        return result;
     }
-};
+}
 ```
 
 ## 43. Multiply Strings
@@ -2093,30 +2085,33 @@ Output: "56088"
 
 思路：由于是string 则num1和num2可能很大，因此不应该直接转换为int类型计算应该逐位乘，根据前一个进位记录真实值。
 
-```c++
- string multiply(string num1, string num2) {
-        vector<int> res(num1.size()+num2.size(),0);
-        for(int i=num1.size()-1;i>=0;i--)
-        {
-            for(int j=num2.size()-1;j>=0;j--)
-            {
-                res[i+j+1]+=(num1[i]-'0')*(num2[j]-'0');
-                res[i+j]+=res[i+j+1]/10; //C :carray
-                res[i+j+1]%=10;  //real number
+```java
+class Solution {
+    public String multiply(String num1, String num2) {
+        int[] res=new int[num1.length()+num2.length()];
+        for(int i=num1.length()-1;i>=0;i--){
+            for(int j=num2.length()-1;j>=0;j--){
+                res[i+j+1]+=(num1.charAt(i)-'0')*(num2.charAt(j)-'0');
+                res[i+j]+=res[i+j+1]/10;
+                res[i+j+1]%=10;
             }
         }
         
-        int start=0;  //first not zero position
-        while(start<res.size()&&res[start]==0)
-            start++;
-        if(start==res.size())
+        int start=0;
+        while(start<res.length && res[start]==0){
+            start+=1;
+        }
+        if(start==res.length){
             return "0";
+        }
         
-        string result="";
-        for(int i=start;i<res.size();i++)
-            result+=(res[i]+'0');
+        String result="";
+        for(int i=start;i<res.length;i++){
+            result+=String.valueOf(res[i]);
+        }
         return result;
     }
+}
 ```
 
 ## 60. Permutation Sequence
