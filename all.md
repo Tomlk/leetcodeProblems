@@ -2211,7 +2211,44 @@ public:
 };
 ```
 
+java解法
 
+```java
+class Solution {
+    public String getPermutation(int n, int k) {
+        int pos = 0;
+        List<Integer> numbers = new ArrayList<>();
+        int[] factorial = new int[n+1];
+        StringBuilder sb = new StringBuilder();
+
+        // create an array of factorial lookup
+        int sum = 1;
+        factorial[0] = 1;
+        for(int i=1; i<=n; i++){
+            sum *= i;
+            factorial[i] = sum;
+        }
+        // factorial[] = {1, 1, 2, 6, 24, ... n!}
+
+        // create a list of numbers to get indices
+        for(int i=1; i<=n; i++){
+            numbers.add(i);
+        }
+        // numbers = {1, 2, 3, 4}
+
+        k--;
+
+        for(int i = 1; i <= n; i++){
+            int index = k/factorial[n-i];
+            sb.append(String.valueOf(numbers.get(index)));
+            numbers.remove(index);
+            k-=index*factorial[n-i];
+        }
+
+        return String.valueOf(sb);
+    }
+}
+```
 
 # Two pointers
 
@@ -2230,43 +2267,40 @@ Input: nums = [-1,0,1,2,-1,-4]
 Output: [[-1,-1,2],[-1,0,1]]
 ```
 
-```c++
+```java
 class Solution {
-public:
-	vector<vector<int>> threeSum(vector<int>& nums) {
-        vector<vector<int> > resultvec;
-        //sort 
-        sort(nums.begin(),nums.end());
-        if(nums.size()<3)
-            return resultvec;
-        int n=nums.size();
-        for(int i=0;i<n-2;i++)
-        {
+    public List<List<Integer>> threeSum(int[] nums) {
+        
+        int n=nums.length;
+        List<List<Integer>> result=new ArrayList<>();
+        if(n==0)
+            return result;
+        
+        Arrays.sort(nums);
+        for(int i=0;i<n-2;i++){
             if(i>0 && nums[i]==nums[i-1])
                 continue;
-            //O(n^2)->O(n)
             int target=-nums[i];
-            for(int l=i+1,r=n-1;l<r;)
-            {
-                if(nums[l]+nums[r]==target)
-                {
-                    resultvec.push_back({ nums[i],nums[l],nums[r] });
-                  while (l < n - 1 && nums[l] == nums[l + 1])l++;
-                  while (r > 0 && nums[r] == nums[r - 1]) r--;
-                  l++;
-                  r--;
+            int j=i+1;
+            int k=n-1;
+            while(j<k){
+                if(nums[j]+nums[k]==target){
+                    List<Integer> l=Arrays.asList(nums[i],nums[j],nums[k]);
+                    result.add(l);
+                    while(j<n-1 &&nums[j]==nums[j+1]) j+=1;
+                    while(k>0 && nums[k]==nums[k-1]) k-=1;
+                    j+=1;
+                    k-=1;
+                }else if(nums[j]+nums[k]<target){
+                    j++;
+                }else{
+                    k--;
                 }
-                else if(nums[l]+nums[r]<target)
-                        l+=1;
-                else 
-                    r-=1;
             }
         }
-        
-        
-	return resultvec;
-	}
-};
+        return result;
+    }
+}
 ```
 
 ## 16.3Sum Closest
@@ -2281,46 +2315,38 @@ Output: 2
 Explanation: The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
 ```
 
-
-
 解法：与15.3Sum 类似，两个pointer减低时间复杂度
 
-```c++
+```java
 class Solution {
-public:
-    int threeSumClosest(vector<int>& nums, int target) {
-        sort(nums.begin(),nums.end());
+    public int threeSumClosest(int[] nums, int target) {
+        Arrays.sort(nums);
+        int n=nums.length;
         
-        int MAX=10000;
-        int closeD=abs(MAX-target);
-        int result=MAX;
-        for(int i=0;i<nums.size()-2;i++)
-        {
+        int closedDistance=10000;
+        int result=-1;
+        for(int i=0;i<n;i++){
+            int sumTarget=target-nums[i];
             int j=i+1;
-            int k=nums.size()-1;
-            while(j<k)
-            {
-                int temp=nums[i]+nums[j]+nums[k];
-                //distance
-                if(abs(temp-target)<closeD)
-                {
-                    closeD=abs(temp-target);
-                    result=temp;
+            int k=n-1;
+            while(k>j){
+                int total=nums[j]+nums[k];
+                if(Math.abs(total-sumTarget)<closedDistance){
+                    closedDistance=Math.abs(total-sumTarget);
+                    result=total+nums[i];
                 }
-                if(temp-target<0)
-                {
+                if(total==sumTarget){
+                    return target;
+                }else if(nums[j]+nums[k]>=sumTarget){
+                    k-=1;
+                }else{
                     j+=1;
                 }
-                else if(temp-target>0){
-                    k-=1;
-                }
-                else
-                    return temp;
             }
         }
         return result;
     }
-};
+}
 ```
 
 ## 26.Remove Duplicates from Sorted Array
