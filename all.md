@@ -2381,29 +2381,25 @@ public int removeDuplicates(int[] nums) {
 
 给定一个源字符串和一个目标字符串，返回目标字符串第一次在源字符串出现的位置，”“则返回0，没有则返回-1。
 
-直接思路：遍历并利用substr进行比较：
+直接思路：遍历并利用substring进行比较：
 
-```c++
+```java
 class Solution {
-public:
-    int strStr(string haystack, string needle) {
-    
-        int m=haystack.size();
-        int n=needle.size();
-        //"" return 0
-        if(n==0)
+    public int strStr(String haystack, String needle) {
+        if(needle.length()==0){
             return 0;
-        //n>m return -1
-        else if(n>m)
-            return -1;
-        for(int i=0;i<=m-n;i++)
-        {
-            if(haystack.substr(i,n)==needle)
-                return i;
+        }
+            
+        for(int i=0;i<=haystack.length()-needle.length();i++){
+            if(haystack.charAt(i)==needle.charAt(0)){
+                if(haystack.substring(i,i+needle.length()).equals(needle)){
+                    return i;
+                }
+            }
         }
         return -1;
     }
-};
+}
 ```
 
 ## 61.Rotate List
@@ -2425,41 +2421,39 @@ Output: [4,5,1,2,3]
 
 因为方向是最后一个数目，因此实际旋转后的终点节点是第l-k 个节点，开始节点是l-k+1节点。
 
-```c++
-ListNode* rotateRight(ListNode* head, int k) {
+```java
+class Solution {
+    public ListNode rotateRight(ListNode head, int k) {
         
-        if(head==nullptr)
-            return nullptr;
-        
-        int l=0;     //node total number
-        ListNode* temp=head;
-        ListNode* last;
-        
-        while(temp!=nullptr)
-        {
-            if(temp->next==nullptr)  //find old last node
-                last=temp;
-            temp=temp->next;
-            l++;
+        if(head==null){
+            return null;
         }
-        k=k%l;
-        int index=1;
-        temp=head;
-
-        //circle
-        last->next=head;
-        
-        while(index<l-k)  //l-k:find newlast  l-l+1:find newfirst
-        {
-            index++;
-            temp=temp->next;
+        int n=0;
+        ListNode first=head;
+        ListNode end=null;
+        while(head!=null){
+            n+=1;
+            if(head.next==null){
+                end=head;
+            }
+            head=head.next;
         }
         
-        ListNode* newfirst=temp->next;
-        ListNode* newlast=temp;
-        newlast->next=nullptr;
-        return newfirst;
+        int offset=k%n;
+        int index=n-offset;
+        end.next=first;
+        head=first;
+        int i=0;
+        while(i<index-1){
+            i+=1;
+            head=head.next;
+        }
+        
+        ListNode newHead=head.next;
+        head.next=null;
+        return newHead;
     }
+}
 ```
 
 ## 80. Remove Duplicates from Sorted Array II
