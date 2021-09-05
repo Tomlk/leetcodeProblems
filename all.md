@@ -2470,35 +2470,50 @@ Output: 5, nums = [1,1,2,2,3]
 Explanation: Your function should return length = 5, with the first five elements of nums being 1, 1, 2, 2 and 3 respectively. It doesn't matter what you leave beyond the returned length.
 ```
 
-```c++
-int removeDuplicates(vector<int>& nums) {
-        
-        int newi=0;
-        while(newi<static_cast<int>(nums.size())-2)
-        {  
-            //cout<<"newi:"<<newi<<endl;
-            for(int i=newi;i<static_cast<int>(nums.size())-2;)
-            {
-                if(nums[i]==nums[i+1]&&nums[i+1]==nums[i+2])
-                {
-                    int duplicate=nums[i];
-                    int start=i+2;
-                    int end=start;
-                    while(end<nums.size()&& nums[end]==duplicate)
-                        end++;
-                    nums.erase(nums.begin()+start,nums.begin()+end);  //delete
-                    newi=start;       //newi :next consider value
-                    break;
-                }
-                else
-                {
-                    newi=i+1;
-                    break;
+```java
+class Solution {
+    public int removeDuplicates(int[] nums) {
+        int slow=1;
+        int fast=1;
+        int time=1;
+        int pre=nums[0];
+        while(slow<nums.length && fast<nums.length){
+            if(nums[fast]!=pre){
+                nums[slow]=nums[fast];
+                pre=nums[slow];
+                slow+=1;
+                fast+=1;
+                time=1;
+            }else{
+                if(time<2){
+                    nums[slow]=nums[fast];
+                    slow+=1;
+                    fast+=1;        
+                    time=time+1;
+                }else{
+                    while(fast<nums.length && nums[fast]==pre){
+                        fast+=1;
+                    }
+                    if(fast<nums.length){
+                        nums[slow]=nums[fast];
+                        pre=nums[slow];
+                    }else{
+                        break;
+                    }
+                    time=1;
+                    slow+=1;
+                    fast+=1;
                 }
             }
         }
-        return nums.size();
+        
+//         for(int i=fast;i<nums.length;i++){
+//             //
+//         }
+        
+        return slow;
     }
+}
 ```
 
 
@@ -2576,38 +2591,34 @@ $dp[i][j]=true$即$s[0...i-1]$可用$p[0...j-1]$描述出来。
 
 <font color=red>思考：理解状态之间的变化</font>
 
-```c++
+```java
 class Solution {
-public:
- bool isMatch(string s, string p) {
-     
-     int m=s.size();
-     int n=p.size();
-     
-     //dp[i][j] ==true means  s[0:i] can be described by p[0:j]
-     vector<vector<bool> > dp(m+1,vector<bool>(n+1,false));
-     
-     dp[0][0]=true;
-     
-     //special situation s="" 
-     for(int j=1;j<=n;j++)
-         dp[0][j]=p[j-1]=='*'&&dp[0][j-2];
-     
-     for(int i=1;i<=m;i++)
-     {
-         for(int j=1;j<=n;j++)
-         {
-             if(p[j-1]!='*')         
-                 //
-                 dp[i][j]=(dp[i-1][j-1] &&(s[i-1]==p[j-1]||'.'==p[j-1]));
-             else
-                 dp[i][j]=dp[i][j-2] ||(s[i-1]==p[j-2]||'.'==p[j-2])&&dp[i-1][j];
-         }
-     }
-    return dp[m][n];
-    
+    public boolean isMatch(String s, String p) {
+        int m=s.length();
+        int n=p.length();
+        
+        boolean[][] dp=new boolean[m+1][n+1];
+        
+        dp[0][0]=true;
+        
+        for(int j=1;j<=n;j++)
+            dp[0][j]=p.charAt(j-1)=='*'&& dp[0][j-2];
+        
+        for(int i=1;i<=m;i++){
+            for(int j=1;j<=n;j++){
+                if(p.charAt(j-1)!='*'){
+                    dp[i][j]=(dp[i-1][j-1] && (s.charAt(i-1)==p.charAt(j-1)||'.'==p.charAt(j-1)));
+                }else{
+                    dp[i][j]=dp[i][j-2] ||(s.charAt(i-1)==p.charAt(j-2)||'.'==p.charAt(j-2))&&dp[i-1][j];
+                }
+            }
+        }
+        
+        return dp[m][n];
+        
+        
     }
-};
+}
 ```
 
 ## 13.Roman to Integer
@@ -2634,41 +2645,35 @@ Explanation: M = 1000, CM = 900, XC = 90 and IV = 4.
 
 遍历给定字符串，注意1，5及1，10的对应转换关系即可——主要考虑 以4 和以9出现时的转换。
 
-```c++
+```java
 class Solution {
-public:
-    int romanToInt(string s) {
-        unordered_map<char,int> m;
-        m['I']=1;
-        m['V']=5;
-        m['X']=10;
-        m['L']=50;
-        m['C']=100;
-        m['D']=500;
-        m['M']=1000;
+    public int romanToInt(String s) {
+        Map<Character,Integer> m=new HashMap<>();
+        m.put('I',1);
+        m.put('V',5);
+        m.put('X',10);
+        m.put('L',50);
+        m.put('C',100);
+        m.put('D',500);
+        m.put('M',1000);
         
         int result=0;
-        int i;
-        //0* present 0 show (0 or more than 0 times)
-        for(i=0;i<s.size()-1;)
-        {
-            //not 40* or 90*
-            if(m[s[i]]>=m[s[i+1]])
-            {
-                result+=m[s[i]];
+        int i=0;
+        while(i<s.length()-1){
+            if(m.get(s.charAt(i))>=m.get(s.charAt(i+1))){ // not 4 or 9 unit
+                result+=m.get(s.charAt(i));
                 i+=1;
-            }
-            //40* or 90* shows
-            else{
-                result=result+m[s[i+1]]-m[s[i]];
+            }else{
+                result+=m.get(s.charAt(i+1))-m.get(s.charAt(i));
                 i+=2;
             }
         }
-        if(i<s.size())
-            result+=m[s[i]];
+        if(i==s.length()-1){
+            result+=m.get(s.charAt(i));
+        }
         return result;
     }
-};
+}
 ```
 
 ## 14.Longest Comman Prefix
@@ -2692,39 +2697,34 @@ Explanation: There is no common prefix among the input strings.
 
 思路：遍历时，第一个字符串建立一个基准，后续字符串依次比较这个基准即可。
 
-```c++
+```java
 class Solution {
-public:
-    string longestCommonPrefix(vector<string>& strs) {
-        if(strs.empty())
-            return "";
-        //get min length
-        int n=strs[0].size();
-        for(int i=0;i<strs.size();i++)
-            if(strs[i].size()<n)
-                n=strs[i].size();
-        
-        int i;
-        bool flag=false;//  difference emerge
-        for(i=0;i<n;i++)
-        {
-            char target=strs[0][i];
-            for(int j=1;j<strs.size();j++)
-            {
-                if(strs[j][i]!=target)
-                  { 
-                    flag=true;
-                    break;
-                  }
-            }
-            if(flag)
-                return strs[0].substr(0,i);
+    public String longestCommonPrefix(String[] strs) {
+        if(strs.length==1){
+            return strs[0];
         }
-        return strs[0].substr(0,i);
+        String shortStr=strs[0];
+        for(int i=1;i<strs.length;i++){
+            if(strs[i].length()<shortStr.length()){
+                shortStr=strs[i];
+            }
+        }
+
+        int i=0;
         
+        for(i=0;i<shortStr.length();i++){
+            for(int j=0;j<strs.length;j++){
+                if(strs[j].charAt(i)==shortStr.charAt(i)){
+                    continue;
+                }else{
+                    return shortStr.substring(0,i);
+                }
+            }
+        }
         
+        return shortStr.substring(0,i);
     }
-};
+}
 ```
 
 ## 67. Add Binary
@@ -9072,42 +9072,6 @@ Return the following binary tree:
 
 每次重构都要找到那个当前根节点。用一个map存。
 
-```c++
-/* from Preorder and Inorder Traversal */
-    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
-        int n=preorder.size();
-        unordered_map<int,int> m;
-        for(int i=0;i<inorder.size();i++)
-            m[inorder[i]]=i;
-        return helper(preorder,0,n-1,inorder,0,n-1,m);
-    }
-    
-    TreeNode* helper(vector<int>& preorder,int prestart,int preend,vector<int>& inorder,int instart,int inend, unordered_map<int,int>& m)
-    {
-        // tree        8 4 5 3 7 3
-        // preorder    8 [4 3 3 7] [5]
-        // inorder     [3 3 4 7] 8 [5]
-
-        // 每次从 preorder 头部取一个值 mid，作为树的根节点
-        // 检查 mid 在 inorder 中 的位置，则 mid 前面部分将作为 树的左子树，右部分作为树的右子树
-        
-        if(prestart>preend ||instart>inend)
-            return nullptr;
-        
-        //int mid=preorder[prestart];
-        TreeNode* root=new TreeNode(preorder[prestart]);
-        int inroot=m[root->val];
-        int dis=inroot-instart;
-        
-        //TreeNode* root=new TreeNode(mid);
-        root->left=helper(preorder,prestart+1,prestart+dis,inorder,instart,inroot-1,m);
-        root->right=helper(preorder,prestart+1+dis,preend,inorder,inroot+1,inend,m);
-        
-        return root;
-        
-    }
-```
-
 ```java
  TreeNode buildTreeHelper(int[] preorder,int preStart,int preEnd,int[] inorder,int inStart,int inEnd,Map<Integer,Integer> inMap)
     {
@@ -9127,10 +9091,6 @@ Return the following binary tree:
         return buildTreeHelper(preorder,0,preorder.length-1,inorder,0,inorder.length-1,inMap);
     }
 ```
-
-
-
-
 
 ## 106.Construct Binary Tree from Inorder and Postorder Traversal
 
@@ -9157,34 +9117,6 @@ Return the following binary tree:
 ```
 
 思路：仿105
-
-```c++
-class Solution {
-public:
-    TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
-        int n=inorder.size();
-        return helper(inorder,0,n,postorder,0,n);
-    }
-    
-    TreeNode* helper(vector<int>& inorder,int instart,int inend,vector<int>& postorder,int poststart,int postend)
-    {
-        // tree        8 4 5 3 7 3
-        // inorder     [9] 3 [15 20 7]
-        // postorder    [9] [15 7 20] 3
-        if(instart>=inend ||poststart>=postend)
-            return nullptr;
-        int mid=postorder[postend-1];
-        int dis=find(inorder.begin()+instart,inorder.begin()+inend,mid)-(inorder.begin()+instart);
-        
-        TreeNode* root=new TreeNode(mid);
-        root->left=helper(inorder,instart,instart+dis,postorder,poststart,poststart+dis);
-        root->right=helper(inorder,instart+dis+1,inend,postorder,poststart+dis,postend-1);
-        return root;
-    }
-   
-};
-
-```
 
 ```java
 class Solution {
