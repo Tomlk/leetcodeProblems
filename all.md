@@ -2747,61 +2747,53 @@ Output: "10101"
 
 思路：考虑进位C即可。
 
-```c++
-string addBinary(string a, string b) {
-        int l1=a.size();
-        int l2=b.size();
-        string result="";
-        int i,j;
-        int C=0;
-        for(i=l1-1,j=l2-1;i>=0&&j>=0;i--,j--)
-        {
-            int x=a[i]-'0';
-            int y=b[j]-'0';
-            int temp=x+y+C;
-            C=0;
-            if(temp>1)
-            {
-                C=1;
-                temp=temp%2;
-            }
-            result+=(temp+'0');
+```java
+class Solution {
+    public String addBinary(String a, String b) {
+        if(a.length()>b.length()){
+            String temp=a;
+            a=b;
+            b=temp;
         }
-        //a longer
-        while(i>=0)
-        {
-            int x=a[i]-'0';
-            int temp=x+C;
-            C=0;
-            if(temp>1)
-            {
-                C=1;
-                temp=temp%2;
+        int i=a.length()-1;
+        int j=b.length()-1;
+        int c=0;
+        String result="";
+        while(i>=0){
+            int cur=a.charAt(i)-'0'+b.charAt(j)-'0'+c;
+            if(cur>=2){
+                cur=cur%2;
+                c=1;
+            }else{
+                c=0;
             }
-            result+=(temp+'0');
-            i--;
+            result=String.valueOf(cur)+result;
+            i-=1;
+            j-=1;
         }
-        //or b longer
-        while(j>=0)
-        {
-            int y=b[j]-'0';
-            int temp=y+C;
-            C=0;
-            if(temp>1)
-            {
-                C=1;
-                temp=temp%2;
+        while(j>=0){
+            int cur=b.charAt(j)-'0'+c;
+            if(cur>=2){
+                cur=cur%2;
+                c=1;
+            }else{
+                c=0;
             }
-            result+=(temp+'0');
-            j--;
+            result=String.valueOf(cur)+result;
+            j-=1;
+            if(c==0){
+                break;
+            }
         }
-        
-        if(C==1)
-            result+='1';
-        reverse(result.begin(),result.end());
+        if(c==1){
+            result="1"+result;
+        }
+        if(j>=0){
+            result=b.substring(0,j+1)+result;
+        }
         return result;
-        
     }
+}
 ```
 
 ## 72.Edit Distance
@@ -2837,29 +2829,6 @@ exection -> execution (insert 'u')
 思路：考虑动态规划
 
  <img src="./imgs/72.png" alt="s" style="zoom:50%;" />
-
-```c++
-      int minDistance(string word1, string word2) {
-        int m=word1.size();
-        int n=word2.size();
-        vector<vector<int> > dp(m+1,vector<int>(n+1,0));
-        
-        for(int i=1;i<=m;i++) dp[i][0]=i;
-        for(int j=1;j<=n;j++) dp[0][j]=j;
-        
-        for(int i=1;i<=m;i++)
-        {
-            for(int j=1;j<=n;j++)
-            {
-                if(word1[i-1]==word2[j-1]) dp[i][j]=dp[i-1][j-1];
-                else{
-                    dp[i][j]=min(dp[i-1][j-1],min(dp[i][j-1],dp[i-1][j]))+1;
-                }
-            }
-        }
-        return dp[m][n];
-    }
-```
 
 ```java
 class Solution {
